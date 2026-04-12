@@ -46,7 +46,7 @@ const VotePagination = ({ totalPages, currentPage, setCurrentPage }: VotePaginat
   }
 
   return (
-    <Pagination className='my-10'>
+    <Pagination className='my-8'>
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious
