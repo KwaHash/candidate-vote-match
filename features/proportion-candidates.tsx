@@ -2,18 +2,15 @@
 
 import { ProportionCandidateCard } from '@/components/card/proportion-candidate-card'
 import LoadingIndicator from '@/components/loading-indicator'
-import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { blocks } from '@/constants/areas'
 import { parties } from '@/constants/parties'
-import { proportionCandidatesToCsv, selectedProportionalDescription } from '@/lib/utils'
+import { selectedProportionalDescription } from '@/lib/utils'
 import { IPolitician } from '@/types/politician'
 import axios from 'axios'
-import Link from 'next/link'
 import { Fragment, useEffect, useState } from 'react'
-import { FaHeart } from 'react-icons/fa'
 import { FaChevronRight } from 'react-icons/fa6'
 import { HiMiniUserGroup } from 'react-icons/hi2'
 import { PiMapPinAreaFill } from 'react-icons/pi'
@@ -67,27 +64,26 @@ const ProportionCandidatesPage = () => {
     return <LoadingIndicator />
   }
 
-  const downloadCsv = () => {
-    const politicians = filterParty === '全て政党' ? byParty?.map((p) => p.politicians).flat() : allPoliticians
-    const csv = proportionCandidatesToCsv(politicians ?? [])
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `比例代表_${filterProportional}_${filterParty}.csv`
-    a.click()
-    URL.revokeObjectURL(url)
-  }
-
   return (
     <div className='min-h-screen bg-gradient-to-b from-background to-muted/20'>
       {/* Hero */}
-      <section className='py-20 bg-gradient-to-br from-primary/10 to-accent/10'>
-        <div className='container'>
-          <div className='max-w-3xl mx-auto text-center space-y-4'>
-            <h1 className='text-4xl md:text-5xl font-bold'>第51回衆議院議員選挙(比例代表)</h1>
-            <p className='text-xl text-muted-foreground'>公示日: 	2026年01月27日、 投票日: 2026年02月08日</p>
+      <section className='relative bg-white'>
+        <div className='absolute inset-0 bg-gradient-to-r from-green-600 to-green-600/85' />
+        <div className='relative max-w-7xl mx-auto px-4 py-24'>
+          <div className='text-center'>
+            <h1 className='text-4xl sm:text-5xl lg:text-6xl font-bold leading-normal tracking-tight text-white'>第51回衆議院議員選挙(比例代表)</h1>
+            <p className='mt-6 text-base sm:text-lg md:text-xl !leading-8 sm:!leading-10 text-gray-100'>公示日: 	2026年01月27日、 投票日: 2026年02月08日</p>
           </div>
+        </div>
+        <div className='absolute bottom-0 left-0 right-0'>
+          <svg
+            className='w-full h-16 text-white transform rotate-180'
+            fill='currentColor'
+            viewBox='0 0 1200 120'
+            preserveAspectRatio='none'
+          >
+            <path d='M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z' />
+          </svg>
         </div>
       </section>
 
@@ -205,24 +201,6 @@ const ProportionCandidatesPage = () => {
             </Table>
           </Fragment>
         )}
-      </section>
-
-      {/* CTA */}
-      <section className='py-20 bg-gradient-to-br from-primary/10 to-accent/10'>
-        <div className='container'>
-          <div className='max-w-3xl mx-auto text-center space-y-6'>
-            <h2 className='text-3xl font-bold'>あなたにぴったりの推しを見つけよう</h2>
-            <p className='text-lg text-muted-foreground'>
-              診断であなたの価値観に合った政治家をマッチング
-            </p>
-            <Button size='lg' className='text-base h-14 px-8 rounded-none bg-primary hover:bg-primary/90 transition-all duration-500' asChild>
-              <Link href='/match'>
-                <FaHeart className='h-5 w-5 mr-1' />
-                <span>診断を始める</span>
-              </Link>
-            </Button>
-          </div>
-        </div>
       </section>
     </div>
   )

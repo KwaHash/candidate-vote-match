@@ -43,14 +43,14 @@ export default function MemberHeader() {
           <Link key={href} href={href} className={linkClass}>
             <Icon
               className={cn(
-                'text-2xl transition-colors duration-300 group-hover:text-primary',
-                isActive ? 'text-primary' : 'text-[#333]'
+                'text-2xl transition-colors duration-300 group-hover:text-green-600',
+                isActive ? 'text-green-600' : 'text-[#333]'
               )}
             />
             <span
               className={cn(
-                'transition-colors duration-300 group-hover:text-primary',
-                isActive ? 'text-primary' : 'text-[#333]'
+                'transition-colors duration-300 group-hover:text-green-600',
+                isActive ? 'text-green-600' : 'text-[#333]'
               )}
             >
               {label}
@@ -65,20 +65,20 @@ export default function MemberHeader() {
             'group',
             linkClass,
             'outline-none rounded-md',
-            'data-[state=open]:text-primary [&_svg]:transition-colors [&_svg]:duration-300',
-            isElectionSectionActive ? 'text-primary' : 'text-[#333]'
+            'data-[state=open]:text-green-600 [&_svg]:transition-colors [&_svg]:duration-300',
+            isElectionSectionActive ? 'text-green-600' : 'text-[#333]'
           )}
         >
           <FaListCheck
             className={cn(
-              'text-2xl transition-colors duration-300 group-hover:text-primary group-data-[state=open]:text-primary',
-              isElectionSectionActive ? 'text-primary' : 'text-[#333]'
+              'text-2xl transition-colors duration-300 group-hover:text-green-600 group-data-[state=open]:text-green-600',
+              isElectionSectionActive ? 'text-green-600' : 'text-[#333]'
             )}
           />
           <span
             className={cn(
-              'transition-colors duration-300 group-hover:text-primary group-data-[state=open]:text-primary',
-              isElectionSectionActive ? 'text-primary' : 'text-[#333]'
+              'transition-colors duration-300 group-hover:text-green-600 group-data-[state=open]:text-green-600',
+              isElectionSectionActive ? 'text-green-600' : 'text-[#333]'
             )}
           >
             {houseElectionNav.title}
@@ -86,7 +86,7 @@ export default function MemberHeader() {
           <FaChevronDown
             className={cn(
               'text-sm opacity-80 transition-transform duration-300 group-data-[state=open]:rotate-180',
-              isElectionSectionActive ? 'text-primary' : 'text-[#333] group-hover:text-primary'
+              isElectionSectionActive ? 'text-green-600' : 'text-[#333] group-hover:text-green-600'
             )}
             aria-hidden
           />
@@ -107,9 +107,9 @@ export default function MemberHeader() {
                 asChild
                 className={cn(
                   'cursor-pointer rounded px-3 py-2.5 text-sm font-medium text-[#333]',
-                  'focus:bg-primary/10 focus:text-primary',
-                  'data-[highlighted]:bg-primary/10 data-[highlighted]:text-primary',
-                  isActive && 'bg-primary/10 text-primary'
+                  'focus:bg-green-600/10 focus:text-green-600',
+                  'data-[highlighted]:bg-green-600/10 data-[highlighted]:text-green-600',
+                  isActive && 'bg-green-600/10 text-green-600'
                 )}
               >
                 <Link href={href} className='flex w-full items-center gap-2'>
@@ -128,14 +128,14 @@ export default function MemberHeader() {
           <Link key={href} href={href} className={linkClass}>
             <Icon
               className={cn(
-                'text-2xl transition-colors duration-300 group-hover:text-primary',
-                isActive ? 'text-primary' : 'text-[#333]'
+                'text-2xl transition-colors duration-300 group-hover:text-green-600',
+                isActive ? 'text-green-600' : 'text-[#333]'
               )}
             />
             <span
               className={cn(
-                'transition-colors duration-300 group-hover:text-primary',
-                isActive ? 'text-primary' : 'text-[#333]'
+                'transition-colors duration-300 group-hover:text-green-600',
+                isActive ? 'text-green-600' : 'text-[#333]'
               )}
             >
               {label}
