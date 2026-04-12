@@ -54,7 +54,7 @@ const PaginationLink = ({
         size,
       }),
       className,
-      isActive ? 'bg-secondary text-white rounded-full' : 'rounded-full'
+      isActive ? 'bg-green-600 text-white rounded-full' : 'rounded-full'
     )}
     {...props}
   />
