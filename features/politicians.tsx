@@ -102,7 +102,7 @@ const PoliticiansPage = () => {
       </section>
 
       {/* Search & Filter */}
-      <section className='w-full max-w-6xl mx-auto px-4 md:px-8 py-8 bg-background/50 backdrop-blur-sm'>
+      <section className='w-full max-w-6xl mx-auto px-4 md:px-8 pt-12 pb-6 bg-background/50 backdrop-blur-sm'>
         <div className='flex flex-col sm:flex-row gap-2 md:gap-3'>
           <div className='flex-1 relative flex'>
             <div className='relative flex-1'>
@@ -143,7 +143,7 @@ const PoliticiansPage = () => {
       </section>
 
       {/* Politicians List */}
-      <section className='w-full max-w-6xl mx-auto px-4 md:px-8 py-12'>
+      <section className='w-full max-w-6xl mx-auto px-4 md:px-8 pb-12'>
         <div className='flex justify-between items-center mb-6 flex-wrap gap-3'>
           <div className='text-sm'>
             全{filteredPoliticians.length}名のうち、{filteredPoliticians.length === 0 ? 0 : startIndex + 1}番から{filteredPoliticians.length === 0 ? 0 : Math.min(endIndex, filteredPoliticians.length)}番までを表示しております。
