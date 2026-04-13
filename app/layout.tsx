@@ -1,4 +1,5 @@
 import Providers from '@/app/providers'
+import MainHeader from '@/components/header/main-header'
 import TailwindIndicator from '@/components/tailwind-indicator'
 import { Toaster as Sonner } from '@/components/ui/sonner'
 import { Toaster } from '@/components/ui/toaster'
@@ -30,7 +31,10 @@ export default function RootLayout({
             <Toaster />
             <Sonner />
             <div className='flex flex-col w-full min-h-screen overflow-x-hidden overflow-y-auto'>
-              {children}
+              <MainHeader />
+              <main className='flex flex-col w-full grow bg-[#eee] pt-20'>
+                {children}
+              </main>
             </div>
             <TailwindIndicator />
           </Providers>
