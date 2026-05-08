@@ -7,13 +7,14 @@ import { usePathname } from 'next/navigation'
 import { FaChevronDown, FaListUl } from 'react-icons/fa'
 import { FaListCheck } from 'react-icons/fa6'
 import { HiOutlineBookOpen } from 'react-icons/hi'
-import { RiLogoutCircleRLine, RiRobot2Line } from 'react-icons/ri'
+import { RiLogoutCircleRLine, RiMessage3Line, RiRobot2Line } from 'react-icons/ri'
 
 const leadingNavItems = [
   { href: '/ai-chat', label: 'AIチャット', icon: RiRobot2Line },
 ] as const
 
 const trailingNavItems = [
+  { href: '/messages', label: 'メッセージ', icon: RiMessage3Line  },
   { href: '/support-resource', label: '支援リソース', icon: HiOutlineBookOpen },
   { href: '/logout', label: 'ログアウト', icon: RiLogoutCircleRLine },
 ] as const

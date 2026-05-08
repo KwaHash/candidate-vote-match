@@ -7,6 +7,11 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+export function getMessageTime() {
+  const now = new Date()
+  return now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0')
+}
+
 export const selectedDistrictDescription = (district: string) => {
   for (const prefecture of prefectures) {
     if (Array.isArray(prefecture.districts)) {
