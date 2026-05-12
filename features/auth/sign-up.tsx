@@ -11,11 +11,12 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { FiLock, FiMail } from 'react-icons/fi'
+import { FiLock, FiMail, FiUser } from 'react-icons/fi'
 import { HiMiniArrowRightStartOnRectangle } from 'react-icons/hi2'
 import * as yup from 'yup'
 
 interface ISignUpForm {
+  username: string;
   email: string;
   password: string;
   confirm_password: string;
@@ -27,32 +28,23 @@ export default function SignUpPage() {
   const [success, setSuccess] = useState<string>('')
 
   const schema = yup.object().shape({
-    email: yup
-      .string()
-      .required('メールアドレスは必須です')
-      .email('メールアドレスを正しく入力してください'),
+    username: yup.string().trim().required('ユーザー名は必須です').min(2, 'ユーザー名は2文字以上で入力してください').max(50, 'ユーザー名は50文字以内で入力してください'),
+    email: yup.string().required('メールアドレスは必須です').email('メールアドレスを正しく入力してください'),
     password: yup.string().required('パスワードは必須です'),
-    confirm_password: yup
-      .string()
-      .required('パスワード（確認用）は必須です')
-      .oneOf([yup.ref('password')], 'パスワードが一致しません'),
+    confirm_password: yup.string().required('パスワード（確認用）は必須です').oneOf([yup.ref('password')], 'パスワードが一致しません'),
   })
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<ISignUpForm>({
+  const { control, handleSubmit, formState: { errors } } = useForm<ISignUpForm>({
     resolver: yupResolver(schema),
   })
 
   const onSubmit = async (data: ISignUpForm) => {
     setError('')
     setSuccess('')
-    const { email, password } = data
+    const { email, password, username } = data
 
     try {
-      const { data: { user_id } } = await axios.post('/api/auth/sign-up', { email, password })
+      const { data: { user_id } } = await axios.post('/api/auth/sign-up', { email, password, username })
       if (user_id) {
         router.push('/login')
       }
@@ -73,6 +65,22 @@ export default function SignUpPage() {
         <h1 className='text-2xl text-gray-900 text-center mt-4 mb-8 font-bold'>サインアップ</h1>
 
         <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-6'>
+          <div className='flex flex-col gap-2'>
+            <div className='flex gap-1 items-center'>
+              <FiUser className='text-lg' />
+              <Label htmlFor='username'>ユーザー名</Label>
+              <RequiredLabel />
+            </div>
+            <div className='w-full'>
+              <InputField id='username' control={control} className='w-full' />
+              {errors.username && (
+                <p className='text-xs mt-2 text-m-red'>
+                  {errors.username.message}
+                </p>
+              )}
+            </div>
+          </div>
+
           <div className='flex flex-col gap-2'>
             <div className='flex gap-1 items-center'>
               <FiMail className='text-lg' />
