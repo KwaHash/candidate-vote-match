@@ -33,6 +33,7 @@ async function initializeDatabase(db: Connection) {
     CREATE TABLE IF NOT EXISTS candidates (
       id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
       email VARCHAR(255) NOT NULL UNIQUE,
+      username VARCHAR(255) NOT NULL UNIQUE,
       password VARCHAR(255) NOT NULL,
       is_verified BOOLEAN NOT NULL DEFAULT FALSE,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
