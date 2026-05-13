@@ -12,6 +12,11 @@ export function getMessageTime() {
   return now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0')
 }
 
+export function formatChatTime(iso: string) {
+  const date = new Date(iso)
+  return date.getHours().toString().padStart(2, '0') + ':' + date.getMinutes().toString().padStart(2, '0')
+}
+
 export const selectedDistrictDescription = (district: string) => {
   for (const prefecture of prefectures) {
     if (Array.isArray(prefecture.districts)) {

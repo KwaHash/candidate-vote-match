@@ -2,65 +2,130 @@
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { cn, getMessageTime } from '@/lib/utils'
-import Image from 'next/image'
+import { Skeleton } from '@/components/ui/skeleton'
+import { useChatSocket } from '@/hooks/use-chat-socket'
+import { fetchConversationMessages, fetchConversations } from '@/lib/chat-api'
+import { cn, formatChatTime } from '@/lib/utils'
+import type { ChatConversation, ChatMessage } from '@/types/chat'
 import { useEffect, useRef, useState } from 'react'
 import { IoIosArrowBack, IoIosSend } from 'react-icons/io'
 
-const conversations = [
-  {
-    id: 1,
-    with: '道下大樹',
-    avatar: '/avatars/向山_淳.jpg',
-    lastMessage: '日本の衆議院選挙での投票方法と当日の流れを教えてください。',
-  },
-  {
-    id: 2,
-    with: '金沢結衣',
-    avatar: '/avatars/金沢_結衣.jpg',
-    lastMessage: '日本で投票率を上げるためにはどのような取り組みが有効ですか？',
-  }
-]
+const role = 'candidate' as const
 
-const initialMessages = [
-  {
-    id: 1,
-    from: 'user',
-    content: '日本の衆議院選挙での投票方法と当日の流れを教えてください。',
-    time: '10:30'
-  },
-  {
-    id: 2,
-    from: 'company',
-    content: '小選挙区比例代表並立制を採用しています。全体で465議席あり、そのうち289議席が小選挙区制で選出され、176議席が比例代表制で選出されます。小選挙区制では全国を289の選挙区に分け、各選挙区から1名を選出します。比例代表制では、全国を11のブロックに分け、各ブロックで政党に投票し、得票数に応じて議席を配分します。',
-    time: '10:35'
-  },
-]
+function getPartnerLabel(conversation: ChatConversation) {
+  return conversation.assistantName
+}
 
 const MessagesPage = () => {
-  const [selectedConversation, setSelectedConversation] = useState<number | null>(1)
-  const [messages, setMessages] = useState(initialMessages)
+  const [conversations, setConversations] = useState<ChatConversation[]>([])
+  const [selectedConversationId, setSelectedConversationId] = useState<number | null>(null)
+  const [messages, setMessages] = useState<ChatMessage[]>([])
   const [newMessage, setNewMessage] = useState('')
   const [mobileThreadOpen, setMobileThreadOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const messagesScrollRef = useRef<HTMLDivElement>(null)
+  const { isReady, error: socketError, joinConversation, sendMessage, subscribe } = useChatSocket(role)
+
+  const selectedConversation = conversations.find((conversation) => conversation.id === selectedConversationId) || null
+
+  useEffect(() => {
+    const loadConversations = async () => {
+      setIsLoading(true)
+      setError(null)
+
+      try {
+        const nextConversations = await fetchConversations(role)
+        setConversations(nextConversations)
+        if (nextConversations.length > 0) {
+          setSelectedConversationId((current) => current ?? nextConversations[0].id)
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : '会話一覧の取得に失敗しました。')
+      } finally {
+        setTimeout(() => {
+          setIsLoading(false)
+        }, 500)
+      }
+    }
+
+    void loadConversations()
+  }, [])
+
+  useEffect(() => {
+    if (!selectedConversationId) {
+      setMessages([])
+      return
+    }
+
+    const loadMessages = async () => {
+      setError(null)
+
+      try {
+        const { messages: nextMessages } = await fetchConversationMessages(role, selectedConversationId)
+        setMessages(nextMessages)
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'メッセージの取得に失敗しました。')
+      }
+    }
+
+    void loadMessages()
+  }, [selectedConversationId])
+
+  useEffect(() => {
+    if (!isReady || !selectedConversationId) {
+      return
+    }
+
+    joinConversation(selectedConversationId)
+  }, [isReady, joinConversation, selectedConversationId])
+
+  useEffect(() => {
+    return subscribe((message) => {
+      if (message.conversationId !== selectedConversationId) {
+        setConversations((current) =>
+          current.map((conversation) =>
+            conversation.id === message.conversationId
+              ? {
+                  ...conversation,
+                  lastMessage: message.content,
+                  lastMessageAt: message.createdAt,
+                }
+              : conversation
+          )
+        )
+        return
+      }
+
+      setMessages((current) => {
+        if (current.some((item) => item.id === message.id)) {
+          return current
+        }
+
+        return [...current, message]
+      })
+    })
+  }, [selectedConversationId, subscribe])
 
   useEffect(() => {
     const el = messagesScrollRef.current
     if (!el) return
     el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' })
-  }, [messages, selectedConversation])
+  }, [messages, selectedConversationId])
 
-  const handleConversationClick = (id: number) => {
-    setSelectedConversation(id)
-    setMessages(initialMessages)
+  const handleConversationClick = (conversationId: number) => {
+    setSelectedConversationId(conversationId)
     setNewMessage('')
     setMobileThreadOpen(true)
   }
 
   const handleSend = () => {
-    if (!newMessage.trim()) return
+    if (!selectedConversationId || !newMessage.trim()) {
+      return
+    }
+
+    sendMessage(selectedConversationId, newMessage.trim())
     setNewMessage('')
-    setMessages([...messages, { id: messages.length + 1, from: 'user', content: newMessage, time: getMessageTime() }])
   }
 
   return (
@@ -72,31 +137,50 @@ const MessagesPage = () => {
             mobileThreadOpen && 'max-md:hidden'
           )}
         >
-          <div className='p-6 border-b'>
+          <div className='p-6 border-b space-y-4'>
             <h2 className='text-xl font-semibold'>メッセージ</h2>
+            {(error || socketError) && (
+              <p className='text-sm text-red-600'>{error || socketError}</p>
+            )}
           </div>
-          <div className='overflow-x-hidden overflow-y-auto h-[calc(100%-4rem)] scrollbar'>
-            {conversations.map((conversation) => (
-              <Button
-                key={conversation.id}
-                variant='outline'
-                onClick={() => handleConversationClick(conversation.id)}
-                className={cn('w-full h-auto border-none p-4 flex items-center rounded-none hover:bg-gray-50 hover:text-gray-950',
-                  selectedConversation === conversation.id && 'bg-indigo-50')}
-              >
-                <Image
-                  src={conversation.avatar}
-                  alt={conversation.with}
-                  width={48}
-                  height={48}
-                  className='w-12 h-12 rounded-full mr-2'
-                />
-                <div className='flex-1 text-left flex flex-col gap-1 min-w-0'>
-                  <div className='w-full truncate'>{conversation.with}</div>
-                  <p className='w-full text-xs text-gray-600 truncate'>{conversation.lastMessage}</p>
-                </div>
-              </Button>
-            ))}
+          <div className='overflow-x-hidden overflow-y-auto h-[calc(100%-8rem)] scrollbar'>
+            {isLoading ? (
+              <div className='p-4 space-y-4'>
+                {Array.from({ length: 3 }).map((_, index) => (
+                  <div key={index} className='flex items-center gap-2'>
+                    <Skeleton className='h-12 w-12 shrink-0 rounded-full' />
+                    <div className='flex-1 space-y-2 min-w-0'>
+                      <Skeleton className='h-4 w-[55%]' />
+                      <Skeleton className='h-3 w-full max-w-[85%]' />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : conversations.length === 0 ? (
+              <p className='p-4 text-sm text-gray-500'>会話がありません。</p>
+            ) : (
+              conversations.map((conversation) => (
+                <Button
+                  key={conversation.id}
+                  variant='outline'
+                  onClick={() => handleConversationClick(conversation.id)}
+                  className={cn(
+                    'w-full h-auto border-none p-4 flex items-center rounded-none hover:bg-gray-50 hover:text-gray-950',
+                    selectedConversationId === conversation.id && 'bg-indigo-50'
+                  )}
+                >
+                  <div className='flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-sm font-semibold text-indigo-700 mr-2'>
+                    {getPartnerLabel(conversation).slice(0, 1).toUpperCase()}
+                  </div>
+                  <div className='flex-1 text-left flex flex-col gap-1 min-w-0'>
+                    <div className='w-full truncate'>{getPartnerLabel(conversation)}</div>
+                    <p className='w-full text-xs text-gray-600 truncate'>
+                      {conversation.lastMessage || 'まだメッセージはありません'}
+                    </p>
+                  </div>
+                </Button>
+              ))
+            )}
           </div>
         </div>
 
@@ -120,16 +204,10 @@ const MessagesPage = () => {
                   >
                     <IoIosArrowBack className='h-6 w-6' />
                   </Button>
-                  <Image
-                    src={conversations.find(c => c.id === selectedConversation)?.avatar || ''}
-                    width={48}
-                    height={48}
-                    alt={conversations.find(c => c.id === selectedConversation)?.with || ''}
-                    className='w-10 h-10 rounded-full'
-                  />
-                  <span className='font-medium'>
-                    {conversations.find(c => c.id === selectedConversation)?.with}
-                  </span>
+                  <div className='flex h-10 w-10 items-center justify-center rounded-full bg-indigo-100 text-sm font-semibold text-indigo-700'>
+                    {getPartnerLabel(selectedConversation).slice(0, 1).toUpperCase()}
+                  </div>
+                  <span className='font-medium'>{getPartnerLabel(selectedConversation)}</span>
                 </div>
               </div>
               <div
@@ -137,13 +215,24 @@ const MessagesPage = () => {
                 className='flex-1 overflow-y-auto p-4 space-y-4 min-h-0 scrollbar'
               >
                 {messages.map((message) => (
-                  <div key={message.id}
-                    className={cn('flex', message.from === 'user' ? 'justify-end' : 'justify-start')}
+                  <div
+                    key={message.id}
+                    className={cn('flex', message.senderRole === role ? 'justify-end' : 'justify-start')}
                   >
-                    <div className={cn('max-w-[80%] rounded p-4', message.from === 'user' ? 'bg-indigo-600 text-white' : 'bg-gray-100')}>
+                    <div
+                      className={cn(
+                        'max-w-[80%] rounded p-4',
+                        message.senderRole === role ? 'bg-indigo-600 text-white' : 'bg-gray-100'
+                      )}
+                    >
                       <p className='mb-2 text-sm'>{message.content}</p>
-                      <p className={cn('text-[10px] text-right', message.from === 'user' ? 'text-indigo-200' : 'text-gray-500')}>
-                        {message.time}
+                      <p
+                        className={cn(
+                          'text-[10px] text-right',
+                          message.senderRole === role ? 'text-indigo-200' : 'text-gray-500'
+                        )}
+                      >
+                        {formatChatTime(message.createdAt)}
                       </p>
                     </div>
                   </div>
@@ -166,6 +255,7 @@ const MessagesPage = () => {
                   />
                   <Button
                     onClick={handleSend}
+                    disabled={!isReady}
                     className='w-auto h-auto bg-indigo-600 text-white px-3 rounded hover:bg-indigo-700 transition-all duration-300'
                   >
                     <IoIosSend className='w-5 h-5' />
