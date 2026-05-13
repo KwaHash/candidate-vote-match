@@ -56,6 +56,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       user_id: payload.user_id,
       user_email: payload.user_email,
+      user_name: user.username != null ? String(user.username) : '',
+      user_is_verified: Boolean(user.is_verified),
       user_role: user.role,
       is_authenticated: true,
       access_token: validAccessToken,

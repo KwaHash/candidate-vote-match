@@ -61,6 +61,7 @@ export default function LogInPage() {
       updateAuthState({
         user_id: data.user_id,
         user_email: data.user_email,
+        user_name: data.user_name ?? '',
         user_is_verified: data.user_is_verified || false,
       })
       router.push('/politicians')
