@@ -1,6 +1,12 @@
+'use client'
+
+import { Button } from '@/components/ui/button'
+import { createConversation } from '@/lib/chat-api'
 import { cn } from '@/lib/utils'
 import { ISupportResource } from '@/types/support-resource'
+import { useRouter } from 'next/navigation'
 import { FiMail, FiMapPin, FiPhone } from 'react-icons/fi'
+import { IoChatbubbleEllipsesOutline } from 'react-icons/io5'
 
 interface IResourceItem {
   resource: ISupportResource
@@ -35,6 +41,8 @@ function priceTypeBadgeClass(priceType: string): string {
 }
 
 const ResourceItem = ({ resource }: IResourceItem) => {
+  const router = useRouter()
+
   const {
     provider_type,
     provider_name,
@@ -49,6 +57,10 @@ const ResourceItem = ({ resource }: IResourceItem) => {
   } = resource
 
   const location = [prefecture, municipality].filter(Boolean).join(' ')
+  const handleCreateConversation = async () => {
+    await createConversation('candidate', resource.assistant_id)
+    router.push('/messages')
+  }
 
   return (
     <div className='w-full flex flex-col sm:flex-row border border-border bg-card text-card-foreground shadow-sm'>
@@ -61,7 +73,7 @@ const ResourceItem = ({ resource }: IResourceItem) => {
         </span>
       </div>
 
-      <div className='flex-1 flex flex-col lg:flex-row min-w-0 gap-4'>
+      <div className='flex-1 flex flex-col lg:flex-row min-w-0 gap-4 relative'>
         <div className='flex-1 p-5 min-w-0 border-border'>
           <div className='flex flex-wrap items-center justify-between gap-2 mb-2'>
             <h3 className='flex items-center text-lg sm:text-xl font-semibold mb-2 leading-snug'>
@@ -99,6 +111,11 @@ const ResourceItem = ({ resource }: IResourceItem) => {
             )}
           </div>
         </div>
+        <Button onClick={handleCreateConversation}
+          className='absolute top-4 right-6 w-auto h-auto p-0 rounded-none border-none shadow-none hover:text-black hover:bg-transparent' variant='outline'
+        >
+          <IoChatbubbleEllipsesOutline className='!w-6 !h-6 shrink-0' />
+        </Button>
       </div>
     </div>
   )
