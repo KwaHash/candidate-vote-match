@@ -4,6 +4,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { CgProfile } from 'react-icons/cg'
 import { FaChevronDown, FaListUl } from 'react-icons/fa'
 import { FaListCheck } from 'react-icons/fa6'
 import { HiOutlineBookOpen } from 'react-icons/hi'
@@ -16,6 +17,7 @@ const leadingNavItems = [
 const trailingNavItems = [
   { href: '/messages', label: 'メッセージ', icon: RiMessage3Line  },
   { href: '/support-resource', label: '支援リソース', icon: HiOutlineBookOpen },
+  { href: '/profile', label: 'プロフィール', icon: CgProfile },
   { href: '/logout', label: 'ログアウト', icon: RiLogoutCircleRLine },
 ] as const
 
