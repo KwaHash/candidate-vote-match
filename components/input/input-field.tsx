@@ -34,7 +34,7 @@ const InputField: React.FC<ThisFCProps> = ({
           {...field}
           id={id}
           disabled={disabled}
-          className={cn(className, 'rounded-none focus-visible:ring-[#777] focus-visible:ring-offset-0')}
+          className={cn('rounded-none focus-visible:ring-[#777] focus-visible:ring-offset-0', className)}
           placeholder={placeholder}
           type={isPassword === false ? 'text' : 'password'}
         />
