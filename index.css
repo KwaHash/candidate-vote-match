@@ -161,3 +161,14 @@
   background: transparent;
   margin-top: 0px;
 }
+
+/* Calendar month/year native dropdown list */
+.calendar-root select {
+  font-size: 0.75rem;
+}
+
+.calendar-root select option {
+  font-size: 0.75rem;
+  line-height: 1.75;
+  padding: 0.375rem 0.625rem;
+}
