@@ -92,6 +92,24 @@ async function initializeDatabase(db: Connection) {
   `)
 
   await db.execute(`
+    CREATE TABLE IF NOT EXISTS candidate_profiles (
+      id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+      candidate_id INT NOT NULL UNIQUE,
+      kanji_name VARCHAR(255) NOT NULL,
+      hiragana_name VARCHAR(255) NOT NULL,
+      party VARCHAR(255) NOT NULL,
+      birth_date VARCHAR(255) NOT NULL,
+      avatar MEDIUMTEXT NOT NULL,
+      title VARCHAR(255),
+      origin VARCHAR(255),
+      biography TEXT,
+      question_answers JSON,
+      website JSON,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    )
+  `)
+
+  await db.execute(`
     CREATE TABLE IF NOT EXISTS resources (
       id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
       provider_type VARCHAR(64) NOT NULL,
