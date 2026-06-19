@@ -105,6 +105,7 @@ async function initializeDatabase(db: Connection) {
       biography TEXT,
       question_answers JSON,
       website JSON,
+      custom_items JSON,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     )
   `)

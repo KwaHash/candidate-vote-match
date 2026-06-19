@@ -16,7 +16,7 @@ import { policyQuestions } from '@/constants/policy'
 import { cn, WEBSITE_LINK_LABELS } from '@/lib/utils'
 import {
   isProfileAvatarValue, MAX_PROFILE_AVATAR_SIZE_BYTES, PROFILE_AVATAR_ACCEPT,
-  type ICandidateProfile, type IProfileForm, type ProfileWebsiteLink
+  type ICandidateProfile, type IProfileForm, type ProfileCustomItem, type ProfileWebsiteLink
 } from '@/types/profile'
 import { yupResolver } from '@hookform/resolvers/yup'
 import axios from 'axios'
@@ -108,6 +108,14 @@ const createWebsiteLinkEntry = (label = '', url = ''): WebsiteLinkEntry => ({
   url,
 })
 
+type CustomItemEntry = ProfileCustomItem & { id: string }
+
+const createCustomItemEntry = (label = '', value = ''): CustomItemEntry => ({
+  id: `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+  label,
+  value,
+})
+
 const defaultValues: IProfileForm = {
   kanji_name: '',
   hiragana_name: '',
@@ -156,6 +164,20 @@ function validateWebsiteLinks(links: WebsiteLinkEntry[]): string | null {
   return null
 }
 
+function validateCustomItems(items: CustomItemEntry[]): string | null {
+  for (const item of items) {
+    const label = item.label.trim()
+    const value = item.value.trim()
+    if (!label) return '項目名を入力してください。'
+    if (!value) return `「${label}」の内容を入力してください。`
+  }
+  return null
+}
+
+function customItemsFromProfile(items: ProfileCustomItem[] | undefined): CustomItemEntry[] {
+  return (items ?? []).map((item) => createCustomItemEntry(item.label, item.value))
+}
+
 function profileToFormValues(profile: ICandidateProfile): IProfileForm {
   return {
     ...defaultValues,
@@ -179,11 +201,17 @@ function websiteLinksFromProfile(website: ProfileWebsiteLink[] | undefined): Web
 function formToProfilePayload(
   data: IProfileForm,
   questionAnswers: { question: string; answer: string }[],
-  websiteLinks: WebsiteLinkEntry[]
+  websiteLinks: WebsiteLinkEntry[],
+  customItems: CustomItemEntry[]
 ): ICandidateProfile {
   const website = websiteLinks.map((link) => ({
     label: link.label.trim(),
     url: link.url.trim(),
+  }))
+
+  const items = customItems.map((item) => ({
+    label: item.label.trim(),
+    value: item.value.trim(),
   }))
 
   const answeredQuestions = questionAnswers.filter((a) => a.answer.trim() !== '')
@@ -199,6 +227,7 @@ function formToProfilePayload(
     biography: data.biography?.trim() || undefined,
     question_answers: answeredQuestions.length > 0 ? answeredQuestions : undefined,
     website: website.length > 0 ? website : undefined,
+    custom_items: items.length > 0 ? items : undefined,
   }
 }
 
@@ -220,6 +249,7 @@ const ProfilePage = () => {
   const [success, setSuccess] = useState('')
   const [questionAnswers, setQuestionAnswers] = useState(defaultQuestionAnswers)
   const [websiteLinks, setWebsiteLinks] = useState<WebsiteLinkEntry[]>([])
+  const [customItems, setCustomItems] = useState<CustomItemEntry[]>([])
   const [avatarPreviewError, setAvatarPreviewError] = useState(false)
   const [avatarFileName, setAvatarFileName] = useState<string | null>(null)
 
@@ -290,6 +320,7 @@ const ProfilePage = () => {
           reset(profileToFormValues(data.profile))
           setAvatarFileName(null)
           setWebsiteLinks(websiteLinksFromProfile(data.profile.website))
+          setCustomItems(customItemsFromProfile(data.profile.custom_items))
           if (data.profile.question_answers?.length) {
             setQuestionAnswers(
               policyQuestions.map((q) => {
@@ -327,8 +358,14 @@ const ProfilePage = () => {
       return
     }
 
+    const customItemsError = validateCustomItems(customItems)
+    if (customItemsError) {
+      setError(customItemsError)
+      return
+    }
+
     try {
-      const payload = formToProfilePayload(data, questionAnswers, websiteLinks)
+      const payload = formToProfilePayload(data, questionAnswers, websiteLinks, customItems)
       await axios.put('/api/profile', payload, {
         headers: { Authorization: `Bearer ${accessToken}` },
       })
@@ -367,6 +404,23 @@ const ProfilePage = () => {
   }
 
   const canAddWebsiteLink = websiteLinks.length < WEBSITE_LINK_LABELS.length
+
+  const addCustomItem = () => {
+    setCustomItems((prev) => [...prev, createCustomItemEntry('', '')])
+  }
+
+  const removeCustomItem = (id: string) => {
+    setCustomItems((prev) => prev.filter((item) => item.id !== id))
+  }
+
+  const updateCustomItem = (
+    id: string,
+    patch: Partial<Pick<ProfileCustomItem, 'label' | 'value'>>
+  ) => {
+    setCustomItems((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, ...patch } : item))
+    )
+  }
 
   if (isLoading) {
     return <LoadingIndicator />
@@ -691,6 +745,75 @@ const ProfilePage = () => {
                           size='sm'
                           className='shrink-0 hover:bg-transparent text-muted-foreground hover:text-red-600 transform duration-300 ease-in-out'
                           onClick={() => removeWebsiteLink(link.id)}
+                          aria-label='削除'
+                        >
+                          <FaTrash className='h-4 w-4' />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className='flex flex-col gap-4 mt-6'>
+                <div className='flex items-center justify-between gap-2'>
+                  <Label className='text-sm font-medium text-gray-800'>その他の項目</Label>
+                  <Button
+                    type='button'
+                    variant='outline'
+                    size='sm'
+                    className='rounded-none border-gray-200 bg-white hover:bg-gray-400 transform duration-300 ease-in-out'
+                    onClick={addCustomItem}
+                  >
+                    <FaPlus className='mr-1 h-3 w-3' />
+                    追加
+                  </Button>
+                </div>
+                {customItems.length === 0 ? (
+                  <p className='text-sm text-muted-foreground'>
+                    追加ボタンから自由な項目を登録できます
+                  </p>
+                ) : (
+                  <div className='flex flex-col gap-3'>
+                    {customItems.map((item) => (
+                      <div
+                        key={item.id}
+                        className='flex flex-col gap-2 rounded-md border border-gray-200 p-3 sm:flex-row sm:items-end'
+                      >
+                        <div className='flex flex-1 flex-col gap-2 sm:max-w-[200px]'>
+                          <Label htmlFor={`custom-label-${item.id}`} className='text-sm'>
+                            項目名
+                          </Label>
+                          <Input
+                            id={`custom-label-${item.id}`}
+                            value={item.label}
+                            placeholder='例：所属委員会'
+                            className={profileInputClass}
+                            onChange={(e) =>
+                              updateCustomItem(item.id, { label: e.target.value })
+                            }
+                          />
+                        </div>
+                        <div className='flex flex-[2] flex-col gap-2'>
+                          <Label htmlFor={`custom-value-${item.id}`} className='text-sm'>
+                            内容
+                          </Label>
+                          <Input
+                            id={`custom-value-${item.id}`}
+                            value={item.value}
+                            placeholder='例：予算委員会'
+                            className={profileInputClass}
+                            onChange={(e) =>
+                              updateCustomItem(item.id, { value: e.target.value })
+                            }
+                          />
+                        </div>
+                        <Button
+                          type='button'
+                          variant='ghost'
+                          size='sm'
+                          className='shrink-0 hover:bg-transparent text-muted-foreground hover:text-red-600 transform duration-300 ease-in-out'
+                          onClick={() => removeCustomItem(item.id)}
                           aria-label='削除'
                         >
                           <FaTrash className='h-4 w-4' />
