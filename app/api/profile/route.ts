@@ -3,6 +3,7 @@ import { withDatabase } from '@/lib/db'
 import {
   isProfileAvatarValue,
   type ICandidateProfile,
+  type ProfileCustomItem,
   type ProfileQuestionAnswer,
   type ProfileWebsiteLink,
 } from '@/types/profile'
@@ -40,6 +41,7 @@ function rowToProfile(row: Record<string, unknown>): ICandidateProfile {
     biography: row.biography != null ? String(row.biography) : undefined,
     question_answers: parseJsonField<ProfileQuestionAnswer[]>(row.question_answers) ?? undefined,
     website: parseJsonField<ProfileWebsiteLink[]>(row.website) ?? undefined,
+    custom_items: parseJsonField<ProfileCustomItem[]>(row.custom_items) ?? undefined,
   }
 }
 
@@ -136,6 +138,7 @@ export async function PUT(req: NextRequest) {
       biography: body.biography != null ? String(body.biography).trim() || undefined : undefined,
       question_answers: Array.isArray(body.question_answers) ? body.question_answers : undefined,
       website: Array.isArray(body.website) ? body.website : undefined,
+      custom_items: Array.isArray(body.custom_items) ? body.custom_items : undefined,
     }
 
     await withDatabase(async (db) => {
@@ -155,13 +158,14 @@ export async function PUT(req: NextRequest) {
         profile.biography ?? null,
         profile.question_answers ? JSON.stringify(profile.question_answers) : null,
         profile.website ? JSON.stringify(profile.website) : null,
+        profile.custom_items ? JSON.stringify(profile.custom_items) : null,
       ]
 
       if (existing[0]) {
         await db.query(
           `UPDATE candidate_profiles SET
             kanji_name = ?, hiragana_name = ?, party = ?, birth_date = ?, avatar = ?,
-            title = ?, origin = ?, biography = ?, question_answers = ?, website = ?
+            title = ?, origin = ?, biography = ?, question_answers = ?, website = ?, custom_items = ?
           WHERE candidate_id = ?`,
           [...values, authUser.user_id]
         )
@@ -169,8 +173,8 @@ export async function PUT(req: NextRequest) {
         await db.query(
           `INSERT INTO candidate_profiles (
             candidate_id, kanji_name, hiragana_name, party, birth_date, avatar,
-            title, origin, biography, question_answers, website
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            title, origin, biography, question_answers, website, custom_items
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
           [authUser.user_id, ...values]
         )
       }

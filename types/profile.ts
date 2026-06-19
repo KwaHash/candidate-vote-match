@@ -21,6 +21,11 @@ export type ProfileWebsiteLink = {
   url: string
 }
 
+export type ProfileCustomItem = {
+  label: string
+  value: string
+}
+
 export interface ICandidateProfile {
   kanji_name: string
   hiragana_name: string
@@ -32,6 +37,7 @@ export interface ICandidateProfile {
   biography?: string
   question_answers?: ProfileQuestionAnswer[]
   website?: ProfileWebsiteLink[]
+  custom_items?: ProfileCustomItem[]
 }
 
 export interface IProfileForm extends Omit<ICandidateProfile, 'question_answers' | 'website'> {}
