@@ -23,6 +23,7 @@
 | 2026-06-20 | - | 全体構想を BACKLOG 化（3サイト・全機能） | `BACKLOG.md`, `app/prototype/_data.ts` | 作業中 |
 | 2026-06-20 | proto-v1 (作業中) | 候補者プロフィール管理画面 | `app/prototype/candidate-profile/page.tsx` | 作業中 |
 | 2026-06-20 | proto-v1 (作業中) | 支出・証憑登録（政治資金透明化）画面 | `app/prototype/expenses/page.tsx` | 作業中 |
+| 2026-06-20 | proto-v1 (作業中) | 支援者CRM画面（政治家向けMVP高優先5機能 完了） | `app/prototype/supporter-crm/page.tsx` | 作業中 |
 
 ## 各プロトタイプの詳細
 

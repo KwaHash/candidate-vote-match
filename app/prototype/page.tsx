@@ -61,6 +61,21 @@ const PROTOTYPES = [
       '収入計/支出計/残高を自動集計（本番: expenses テーブル＋収支報告CSV）',
     ],
   },
+  {
+    href: '/prototype/supporter-crm',
+    title: '支援者CRM',
+    target: '政治家向け',
+    targetColor: 'bg-violet-100 text-violet-700',
+    status: '作業中',
+    statusColor: 'bg-amber-100 text-amber-700',
+    description:
+      '応援者を管理する画面。支援タイプ・関心政策・接触履歴・次回アクションを記録し、関係づくりに使う（Support ID / User ID）。',
+    notes: [
+      '個人/団体・支援タイプ・関心政策・地域・公開設定を登録',
+      '接触履歴・次回アクションを記録、支援タイプで絞り込み',
+      '要対応（次回アクションあり）を集計（本番: supporters テーブル）',
+    ],
+  },
 ]
 
 export default function PrototypeIndexPage() {
