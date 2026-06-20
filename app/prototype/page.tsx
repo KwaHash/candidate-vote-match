@@ -76,6 +76,21 @@ const PROTOTYPES = [
       '要対応（次回アクションあり）を集計（本番: supporters テーブル）',
     ],
   },
+  {
+    href: '/prototype/citizen/match',
+    title: '政策マッチング診断',
+    target: '国民向け',
+    targetColor: 'bg-blue-100 text-blue-700',
+    status: '作業中',
+    statusColor: 'bg-amber-100 text-amber-700',
+    description:
+      '有権者が大事にしたい政策を選び、「あなたの選び方タイプ（動物キャラ）」と近い政策テーマを知る診断。政党名より先にタイプを出す（対立を避ける構想方針）。未ログインで使える。',
+    notes: [
+      '10テーマの重要度に答える（30秒・登録不要）',
+      '結果は動物キャラのタイプ＋近い政策テーマ（％）＋シェア導線',
+      '計算はクライアント側ルールベース（LLM不使用＝コスト方針）',
+    ],
+  },
 ]
 
 export default function PrototypeIndexPage() {
