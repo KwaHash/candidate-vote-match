@@ -31,6 +31,21 @@ const PROTOTYPES = [
       '公開範囲・法務確認状況を設定（本番: campaigns テーブル）',
     ],
   },
+  {
+    href: '/prototype/candidate-profile',
+    title: '候補者プロフィール管理',
+    target: '政治家向け',
+    targetColor: 'bg-violet-100 text-violet-700',
+    status: '作業中',
+    statusColor: 'bg-amber-100 text-amber-700',
+    description:
+      '候補者の基本情報・経歴・実績・SNS・支援募集可否を登録する画面。国民向けサイトの候補者ページと政策マッチングの土台（Candidate ID）になる。',
+    notes: [
+      '顔写真・氏名・所属・選挙区・現職/新人を登録',
+      '経歴（学歴/職歴/政治歴）・実績（複数）・SNS・公式サイト',
+      '寄付受付可否・お金以外の支援募集（本番: candidates テーブル）',
+    ],
+  },
 ]
 
 export default function PrototypeIndexPage() {
