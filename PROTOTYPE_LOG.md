@@ -21,6 +21,8 @@
 | 2026-06-20 | - | プロトタイプ一覧ページ / 保存ボタン色調整（遠隔セッション） | `app/prototype/page.tsx`, `policy-stance`（保存ボタン indigo化） | 作業中 |
 | 2026-06-20 | proto-v1 (作業中) | クラウドファンディング作成画面 | `app/prototype/crowdfunding/page.tsx` | 作業中 |
 | 2026-06-20 | - | 全体構想を BACKLOG 化（3サイト・全機能） | `BACKLOG.md`, `app/prototype/_data.ts` | 作業中 |
+| 2026-06-20 | proto-v1 (作業中) | 候補者プロフィール管理画面 | `app/prototype/candidate-profile/page.tsx` | 作業中 |
+| 2026-06-20 | proto-v1 (作業中) | 支出・証憑登録（政治資金透明化）画面 | `app/prototype/expenses/page.tsx` | 作業中 |
 
 ## 各プロトタイプの詳細
 

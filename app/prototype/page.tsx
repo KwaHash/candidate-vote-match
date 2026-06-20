@@ -46,6 +46,21 @@ const PROTOTYPES = [
       '寄付受付可否・お金以外の支援募集（本番: candidates テーブル）',
     ],
   },
+  {
+    href: '/prototype/expenses',
+    title: '支出・証憑登録（政治資金透明化）',
+    target: '政治家向け',
+    targetColor: 'bg-violet-100 text-violet-700',
+    status: '作業中',
+    statusColor: 'bg-amber-100 text-amber-700',
+    description:
+      '収入・支出を証憑つきで登録し、収支・残高を可視化する画面。公開設定した項目が国民向けの透明化ダッシュボードに反映される（Expense ID）。',
+    notes: [
+      '収入/支出の分類・金額・日付・相手先・証憑を登録',
+      '公開可否・関連当事者取引フラグを設定',
+      '収入計/支出計/残高を自動集計（本番: expenses テーブル＋収支報告CSV）',
+    ],
+  },
 ]
 
 export default function PrototypeIndexPage() {
