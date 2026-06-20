@@ -275,7 +275,7 @@ export default function PolicyStancePrototypePage() {
           <button
             onClick={handleSave}
             disabled={answered === 0}
-            className='rounded-lg bg-rose-500 px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-rose-600 disabled:cursor-not-allowed disabled:bg-gray-300'
+            className='rounded-lg bg-indigo-600 px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-gray-300'
           >
             スタンスを保存
           </button>
