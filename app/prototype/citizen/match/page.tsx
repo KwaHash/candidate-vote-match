@@ -13,7 +13,10 @@
 
 import { POLICY_THEMES } from '../../_data'
 import Link from 'next/link'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+
+// 候補者一覧での「政策一致率」算出に使う診断結果の保存キー
+const MATCH_RESULT_KEY = 'proto_citizen_match_v1'
 
 type Step = 'intro' | 'quiz' | 'result'
 
@@ -54,6 +57,19 @@ export default function CitizenMatchPage() {
 
   const top = ranked.filter((r) => r.weight > 0).slice(0, 3)
   const topTheme = top[0]?.theme
+
+  // 結果に到達したら、テーマ別重みを保存（候補者一覧の一致率算出に使う）
+  useEffect(() => {
+    if (step !== 'result') return
+    try {
+      localStorage.setItem(
+        MATCH_RESULT_KEY,
+        JSON.stringify({ weights: scores, savedAt: new Date().toISOString() })
+      )
+    } catch {
+      /* ignore */
+    }
+  }, [step, scores])
 
   const restart = () => {
     setScores({})

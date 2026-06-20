@@ -25,6 +25,7 @@
 | 2026-06-20 | proto-v1 (作業中) | 支出・証憑登録（政治資金透明化）画面 | `app/prototype/expenses/page.tsx` | 作業中 |
 | 2026-06-20 | proto-v1 (作業中) | 支援者CRM画面（政治家向けMVP高優先5機能 完了） | `app/prototype/supporter-crm/page.tsx` | 作業中 |
 | 2026-06-20 | proto-v2 (作業中) | 【国民向け着手】政策マッチング診断 | `app/prototype/citizen/match/page.tsx`, `_data.ts`（テーマに動物キャラ等を追加） | 作業中 |
+| 2026-06-20 | proto-v2 (作業中) | 候補者一覧・検索（全選挙種別・診断連動） | `app/prototype/citizen/candidates/page.tsx`, `_data.ts`（ELECTION_TYPES・SAMPLE_CANDIDATES追加） | 作業中 |
 
 ## 各プロトタイプの詳細
 

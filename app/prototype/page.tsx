@@ -91,6 +91,21 @@ const PROTOTYPES = [
       '計算はクライアント側ルールベース（LLM不使用＝コスト方針）',
     ],
   },
+  {
+    href: '/prototype/citizen/candidates',
+    title: '候補者一覧・検索',
+    target: '国民向け',
+    targetColor: 'bg-blue-100 text-blue-700',
+    status: '作業中',
+    statusColor: 'bg-amber-100 text-amber-700',
+    description:
+      '選挙種別（衆/参/知事/県議/首長/市議）・地域・政党・現職新人で候補者を絞り込み、政策診断との一致率・透明化スコアで比較する画面。',
+    notes: [
+      '全選挙種別を level（国/都道府県/市区町村）で構造化',
+      '診断結果と連動して「あなたとの一致率」を表示・一致率順に並べ替え',
+      'データ出どころ（公式取込/本人入力済み）を可視化。本番は politicians×elections×candidacies',
+    ],
+  },
 ]
 
 export default function PrototypeIndexPage() {
