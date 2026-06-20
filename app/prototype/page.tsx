@@ -76,37 +76,10 @@ const PROTOTYPES = [
       '要対応（次回アクションあり）を集計（本番: supporters テーブル）',
     ],
   },
-  {
-    href: '/prototype/citizen/match',
-    title: '政策マッチング診断',
-    target: '国民向け',
-    targetColor: 'bg-blue-100 text-blue-700',
-    status: '作業中',
-    statusColor: 'bg-amber-100 text-amber-700',
-    description:
-      '有権者が大事にしたい政策を選び、「あなたの選び方タイプ（動物キャラ）」と近い政策テーマを知る診断。政党名より先にタイプを出す（対立を避ける構想方針）。未ログインで使える。',
-    notes: [
-      '10テーマの重要度に答える（30秒・登録不要）',
-      '結果は動物キャラのタイプ＋近い政策テーマ（％）＋シェア導線',
-      '計算はクライアント側ルールベース（LLM不使用＝コスト方針）',
-    ],
-  },
-  {
-    href: '/prototype/citizen/candidates',
-    title: '候補者一覧・検索',
-    target: '国民向け',
-    targetColor: 'bg-blue-100 text-blue-700',
-    status: '作業中',
-    statusColor: 'bg-amber-100 text-amber-700',
-    description:
-      '選挙種別（衆/参/知事/県議/首長/市議）・地域・政党・現職新人で候補者を絞り込み、政策診断との一致率・透明化スコアで比較する画面。',
-    notes: [
-      '全選挙種別を level（国/都道府県/市区町村）で構造化',
-      '診断結果と連動して「あなたとの一致率」を表示・一致率順に並べ替え',
-      'データ出どころ（公式取込/本人入力済み）を可視化。本番は politicians×elections×candidacies',
-    ],
-  },
 ]
+
+// 国民向け（seijiselect.jp）のプロトタイプは別リポジトリ next-vote-match に移設。
+// 政策マッチング診断 /prototype/match、候補者一覧 /prototype/candidates
 
 export default function PrototypeIndexPage() {
   return (
