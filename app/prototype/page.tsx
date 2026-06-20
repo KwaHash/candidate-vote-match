@@ -76,6 +76,48 @@ const PROTOTYPES = [
       '要対応（次回アクションあり）を集計（本番: supporters テーブル）',
     ],
   },
+  {
+    href: '/prototype/support-request',
+    title: '支援募集作成',
+    target: '政治家向け',
+    targetColor: 'bg-violet-100 text-violet-700',
+    status: '作業中',
+    statusColor: 'bg-amber-100 text-amber-700',
+    description:
+      'お金以外の支援（チラシ配布・動画編集・会場・車両など）を募集する画面。作成した募集は支援者サイト（assist）に表示される想定。',
+    notes: [
+      'タイトル・政策テーマ・必要な支援・期間・報酬・公開範囲を設定',
+      '作成した募集を一覧管理（本番: support_requests テーブル）',
+    ],
+  },
+  {
+    href: '/prototype/impact-score',
+    title: '政策実装スコア',
+    target: '政治家向け',
+    targetColor: 'bg-violet-100 text-violet-700',
+    status: '作業中',
+    statusColor: 'bg-amber-100 text-amber-700',
+    description:
+      '活動実績を点数化する画面。議会質問30点・条例案提出50点・予算化70点などを記録し、合計スコアとランクを表示。一部は国民向けの実績として公開される想定。',
+    notes: [
+      '活動の種類・日付・メモを記録して自動加点',
+      '合計スコア・ランク・種別内訳を表示（本番: activities テーブル）',
+    ],
+  },
+  {
+    href: '/prototype/ai-secretary',
+    title: 'AI政策秘書',
+    target: '政治家向け',
+    targetColor: 'bg-violet-100 text-violet-700',
+    status: '作業中',
+    statusColor: 'bg-amber-100 text-amber-700',
+    description:
+      '議会質問案・公約・SNS投稿・想定問答などの作成を支援する候補者向け有料AI機能。',
+    notes: [
+      '6種類のツールからテーマを入力して生成',
+      'プロトの生成はテンプレ（LLM不使用）。本番は候補者ごと従量課金',
+    ],
+  },
 ]
 
 // 国民向け（seijiselect.jp）のプロトタイプは別リポジトリ next-vote-match に移設。
