@@ -18,8 +18,30 @@
 |---|---|---|---|---|
 | 2026-06-18 | proto-v1 (作業中) | 政策スタンス入力画面 | `app/prototype/policy-stance/page.tsx` | 作業中 |
 | 2026-06-18 | - | プロトタイプを認証なしで閲覧可にする調整 | `providers/auth-provider.tsx`（`AUTH_PATHS`に`/prototype`追加） | 作業中 |
+| 2026-06-20 | - | プロトタイプ一覧ページ / 保存ボタン色調整（遠隔セッション） | `app/prototype/page.tsx`, `policy-stance`（保存ボタン indigo化） | 作業中 |
+| 2026-06-20 | proto-v1 (作業中) | クラウドファンディング作成画面 | `app/prototype/crowdfunding/page.tsx` | 作業中 |
+| 2026-06-20 | - | 全体構想を BACKLOG 化（3サイト・全機能） | `BACKLOG.md`, `app/prototype/_data.ts` | 作業中 |
 
 ## 各プロトタイプの詳細
+
+### クラウドファンディング作成画面（`/prototype/crowdfunding`）
+
+**目的:** 政治家が「政策単位」でプロジェクト（クラファン）を立ち上げる。寄付トレーサビリティ（Campaign ID）の起点。
+
+**実装内容:**
+- 政策テーマ（`app/prototype/_data.ts` の `POLICY_THEMES`）・対象地域レベル・地域名・目標金額を入力。
+- 支出計画を明細（用途＋金額）で複数行入力 → 合計を自動計算し、目標金額との差分（一致 / 未割当 / 超過）を表示。
+- 選択中の政策テーマの「標準地域配分（市区町村/都道府県/国会）」をバー表示（全体構想6章の配分表に対応）。
+- 募集する支援タイプ（複数選択）・公開範囲・法務確認状況を設定。
+- 保存は `localStorage`（キー: `proto_crowdfunding_v1`）。
+
+**本番実装で作り直す箇所（開発者向けメモ）:**
+- 保存先を `campaigns` / `expense_plans` テーブルへ（Campaign ID 採番）。
+- 政策テーマ・地域を DB マスタ化（`policies` / `regions`）。現状は `_data.ts` のハードコード。
+- 法務確認（政治資金規正法・公職選挙法）のワークフロー化。MVPでは政治寄付を直接扱わない方針（BACKLOG.md 8章）。
+- 地域配分は「目安表示」のみ。実配分ロジックは Phase2（トレーサビリティ）で実装。
+
+### 政策スタンス入力画面（`/prototype/policy-stance`）
 
 ### 政策スタンス入力画面（`/prototype/policy-stance`）
 
