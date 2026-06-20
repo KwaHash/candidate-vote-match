@@ -43,8 +43,8 @@
 | ✅ | 高 | 政策マッチング診断 | next-vote-match `/prototype/match`。10テーマ・動物キャラ・候補者一致率（※30問/地域別/政党・ファンド一致率は未実装） |
 | ✅ | 高 | 政策別寄付ページ | next-vote-match `/prototype/policies/[id]`。政策ファンド/地域指定/おまかせ/月額・Donation ID（※候補者本人への寄付導線は未実装） |
 | ✅ | 高 | 透明化ダッシュボード | next-vote-match `/prototype/dashboard`。総額/支援者数/支出/残高/分類/地域別/成果/月次 |
-| ⬜ | 中 | 寄付レポート | DON-ID別の使途・残高・成果（あなたの寄付レポート） |
-| ⬜ | 中 | 候補者比較 / 候補者個別詳細ページ / 地域別検索 | 候補者の個別プロフィール詳細ページは未実装 |
+| ✅ | 中 | 寄付レポート | next-vote-match `/prototype/report`。DON-ID別の使途・残高・地域配分・成果 |
+| ✅ | 中 | 候補者比較 / 候補者個別詳細ページ | `/prototype/compare`・`/prototype/candidates/[id]`。地域別検索は候補者一覧のフリーワードで暫定対応 |
 | ⬜ | 低 | SNS連携 / コメント・投票 | |
 
 ## 支援者向け assist.seijiselect.jp
