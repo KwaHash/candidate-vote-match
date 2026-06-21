@@ -142,3 +142,10 @@ Vision / NationalKPI / CountryComparison / PolicyVote / CandidateComparisonMetri
 Phase1 国民の価値（あるべき姿/KPI/政策一覧/候補者比較/政策投票/クラファン/透明化）→
 Phase2 政治家の実用（政策立案AI/KPI設計AI/クラファンAI/LINE投稿AI/リマインダー/CRM）→
 Phase3 支援者マイページ（寄付履歴/支援タスク/成果/SNS拡散/イベント/リソース）
+
+## 追加要望の実装状況（2026-06-20 時点）
+✅ 国民: 日本のあるべき姿 /vision・日本の未来KPI /kpi・世界と比べる日本 /compare-countries・政策投票（賛否/優先度/支援意思＋懸念可視化）・**応援する方法の埋め込み（assist導線）**
+✅ 政治家: AI政策室 /policy-ai（政策案12項目）・LINE/SNSコミュニティ管理 /community・クラファン作成AI（クラファン画面にAI下書き）
+✅ 支援者: 支援ダッシュボード /dashboard（マイページ化。登録は中優先へ）
+✅ admin: ダッシュボードにAIアシスト
+🔜 残: 候補者比較の拡張（ビジョン一致率/KPI設計力等）・候補者AIアバター・地域の声投稿/インタビューAI・KPI設計AI/地域データAI単体・LINE実連携・各AIの実LLM接続（本番）
