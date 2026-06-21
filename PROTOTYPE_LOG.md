@@ -70,3 +70,8 @@
 - 支援募集作成 `/prototype/support-request`: お金以外の支援募集（→assist連携）。
 - 政策実装スコア `/prototype/impact-score`: 活動を点数化・ランク表示（一部国民向け公開）。
 - AI政策秘書 `/prototype/ai-secretary`: 質問案/公約/SNS等の生成支援。生成はプロトのテンプレ（LLM不使用）、本番は候補者ごと従量課金。
+
+## Phase2 政治家側AI（2026-06-20 追加）
+- AI政策室 `/prototype/policy-ai`: 8入力→政策案12項目を構造化（政策立案AI）。プロトはテンプレ、本番は地域データ＋LLM。
+- LINE・SNSコミュニティ管理 `/prototype/community`: 投稿案AI（チャネル/セグメント別）・今日の投稿候補・リマインダー。
+- クラファン作成AI: 既存クラファン画面に「AIで下書き」を追加（テーマ＋困りごと→タイトル/目標/支出計画/成果/支援タイプ）。

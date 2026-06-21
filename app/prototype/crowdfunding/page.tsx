@@ -49,6 +49,7 @@ export default function CrowdfundingPrototypePage() {
   const [visibility, setVisibility] = useState<Visibility>('public')
   const [legal, setLegal] = useState<LegalStatus>('unconfirmed')
   const [savedAt, setSavedAt] = useState<string | null>(null)
+  const [aiNeed, setAiNeed] = useState('')
 
   // 復元
   useEffect(() => {
@@ -112,6 +113,24 @@ export default function CrowdfundingPrototypePage() {
     setSavedAt(now)
   }
 
+  // クラファン作成AI: テーマ＋困りごとから 下書き（タイトル/目標/支出計画/成果/支援タイプ）を生成
+  const aiFill = () => {
+    const need = aiNeed.trim() || `${theme.name}の課題`
+    const where = regionName || theme.name
+    setTitle(`${where}の「${need}」を解決する政策提言プロジェクト`)
+    setGoal(3000000)
+    setRows([
+      { id: 1, purpose: '政策調査', amount: 500000 },
+      { id: 2, purpose: '専門家ヒアリング', amount: 300000 },
+      { id: 3, purpose: '動画広報', amount: 500000 },
+      { id: 4, purpose: '議会質問・提言書作成', amount: 700000 },
+      { id: 5, purpose: '地域説明会', amount: 500000 },
+      { id: 6, purpose: '運営費', amount: 500000 },
+    ])
+    setOutcome(`${need}に関する都道府県・市区町村への提言、議会質問、地域説明会の開催`)
+    setSupportTypes(['寄付', 'スキル提供', '人的支援（ボランティア）'])
+  }
+
   const inputCls =
     'w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-indigo-400 focus:outline-none focus:ring-1 focus:ring-indigo-400'
   const labelCls = 'mb-1.5 block text-sm font-medium text-gray-700'
@@ -129,6 +148,26 @@ export default function CrowdfundingPrototypePage() {
         <p className='mt-1 text-sm text-gray-500'>
           政策単位でプロジェクトを立ち上げます。ここで集めた寄付は、政策テーマ・地域・支出計画に紐づいて追跡されます。
         </p>
+      </div>
+
+      {/* クラファン作成AI */}
+      <div className='mb-5 rounded-xl border border-indigo-200 bg-indigo-50/60 p-4'>
+        <div className='mb-2 flex items-center gap-2'>
+          <span className='text-base'>🤖</span>
+          <span className='text-sm font-bold text-indigo-900'>クラファン作成AI</span>
+        </div>
+        <p className='mb-2 text-xs text-indigo-700'>テーマ（上の政策テーマ）と困りごとを入れると、下書き（タイトル・目標・支出計画・成果・支援タイプ）を自動で埋めます。</p>
+        <div className='flex gap-2'>
+          <input
+            className='w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-indigo-400 focus:outline-none'
+            placeholder='困りごと（例: 避難所の電源が足りない）'
+            value={aiNeed}
+            onChange={(e) => setAiNeed(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter') aiFill() }}
+          />
+          <button onClick={aiFill} className='shrink-0 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700'>AIで下書き</button>
+        </div>
+        <p className='mt-2 text-[11px] text-indigo-400'>※ プロトはテンプレ生成。本番はLLMでストーリー・金額・KPI・透明化項目まで提案。</p>
       </div>
 
       <div className='space-y-5'>

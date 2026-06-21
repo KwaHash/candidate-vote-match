@@ -132,6 +132,34 @@ const PROTOTYPES = [
       '本番: tasks テーブル',
     ],
   },
+  {
+    href: '/prototype/policy-ai',
+    title: 'AI政策室（政策立案AI）',
+    target: '政治家向け',
+    targetColor: 'bg-violet-100 text-violet-700',
+    status: '作業中',
+    statusColor: 'bg-amber-100 text-amber-700',
+    description:
+      'テーマ・地域・課題などを入力すると、政策案を12項目（政策名/課題/データ/他国比較/解決策/役割分担/予算/KPI/反対意見/SNS/クラファン文/議会質問）で構造化するバーティカルAIの中核。',
+    notes: [
+      '8項目の入力→12項目の政策案を生成',
+      'プロトはテンプレ。本番は地域データ＋LLM・候補者ごと従量課金',
+    ],
+  },
+  {
+    href: '/prototype/community',
+    title: 'LINE・SNSコミュニティ管理',
+    target: '政治家向け',
+    targetColor: 'bg-violet-100 text-violet-700',
+    status: '作業中',
+    statusColor: 'bg-amber-100 text-amber-700',
+    description:
+      'LINE/X/Facebook の投稿案AI生成・セグメント配信・リマインダーで、コミュニティ運営を仕組み化する画面。',
+    notes: [
+      'チャネル・セグメント別の投稿案を生成、今日の投稿候補',
+      'リマインダー一覧（本番: community_posts / reminders、炎上チェック・承認フロー）',
+    ],
+  },
 ]
 
 // 国民向け（seijiselect.jp）のプロトタイプは別リポジトリ next-vote-match に移設。
