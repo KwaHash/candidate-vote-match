@@ -12,6 +12,7 @@
  */
 
 import { POLICY_THEMES, REGION_LEVELS, SUPPORT_TYPES, type RegionLevel } from '../_data'
+import { loadJSON, saveJSON } from '../_store'
 import { useEffect, useMemo, useState } from 'react'
 
 interface ExpenseRow {
@@ -53,10 +54,9 @@ export default function CrowdfundingPrototypePage() {
 
   // 復元
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY)
-      if (!raw) return
-      const d = JSON.parse(raw)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const d = loadJSON<any>(STORAGE_KEY, null)
+    if (d) {
       setTitle(d.title ?? '')
       setThemeId(d.themeId ?? POLICY_THEMES[0].id)
       setRegionLevel(d.regionLevel ?? 'prefecture')
@@ -70,8 +70,6 @@ export default function CrowdfundingPrototypePage() {
       setVisibility(d.visibility ?? 'public')
       setLegal(d.legal ?? 'unconfirmed')
       setSavedAt(d.savedAt ?? null)
-    } catch {
-      /* ignore */
     }
   }, [])
 
@@ -103,13 +101,10 @@ export default function CrowdfundingPrototypePage() {
 
   const handleSave = () => {
     const now = new Date().toLocaleString('ja-JP')
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify({
-        title, themeId, regionLevel, regionName, goal, rows,
-        startDate, endDate, outcome, supportTypes, visibility, legal, savedAt: now,
-      })
-    )
+    saveJSON(STORAGE_KEY, {
+      title, themeId, regionLevel, regionName, goal, rows,
+      startDate, endDate, outcome, supportTypes, visibility, legal, savedAt: now,
+    })
     setSavedAt(now)
   }
 

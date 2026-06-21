@@ -10,6 +10,7 @@
  */
 
 import { POLICY_THEMES } from '../_data'
+import { loadJSON, saveJSON } from '../_store'
 import { useEffect, useState } from 'react'
 
 const SUPPORT_NEEDS = [
@@ -47,20 +48,16 @@ export default function SupportRequestPage() {
   const [visibility, setVisibility] = useState<Visibility>('支援者限定')
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY)
-      if (!raw) return
-      const d = JSON.parse(raw)
+    const d = loadJSON<{ items?: SupportRequest[]; savedAt?: string | null } | null>(STORAGE_KEY, null)
+    if (d) {
       setItems(d.items ?? [])
       setSavedAt(d.savedAt ?? null)
-    } catch {
-      /* ignore */
     }
   }, [])
 
   const persist = (next: SupportRequest[]) => {
     const now = new Date().toLocaleString('ja-JP')
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ items: next, savedAt: now }))
+    saveJSON(STORAGE_KEY, { items: next, savedAt: now })
     setSavedAt(now)
   }
 

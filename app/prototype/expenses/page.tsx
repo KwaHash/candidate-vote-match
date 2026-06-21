@@ -11,6 +11,7 @@
  *   政治資金規正法・公職選挙法のチェックは本番で必須（BACKLOG.md 8章）。
  */
 
+import { loadJSON, saveJSON } from '../_store'
 import { useEffect, useMemo, useState } from 'react'
 
 type TxType = 'income' | 'expense'
@@ -48,20 +49,16 @@ export default function ExpensesPrototypePage() {
   const [isRelatedParty, setIsRelatedParty] = useState(false)
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY)
-      if (!raw) return
-      const d = JSON.parse(raw)
+    const d = loadJSON<{ txs?: Tx[]; savedAt?: string | null } | null>(STORAGE_KEY, null)
+    if (d) {
       setTxs(d.txs ?? [])
       setSavedAt(d.savedAt ?? null)
-    } catch {
-      /* ignore */
     }
   }, [])
 
   const persist = (next: Tx[]) => {
     const now = new Date().toLocaleString('ja-JP')
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ txs: next, savedAt: now }))
+    saveJSON(STORAGE_KEY, { txs: next, savedAt: now })
     setSavedAt(now)
   }
 

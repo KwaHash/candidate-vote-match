@@ -8,6 +8,7 @@
  * 注意: 動く仕様書（プロトタイプ）。保存は localStorage（proto_campaign_tasks_v1 / 本番: tasks テーブル）。
  */
 
+import { loadJSON, saveJSON } from '../_store'
 import { useEffect, useMemo, useState } from 'react'
 
 type Status = 'todo' | 'doing' | 'done'
@@ -44,17 +45,13 @@ export default function TasksPage() {
   const [filter, setFilter] = useState<'all' | Status>('all')
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY)
-      setTasks(raw ? (JSON.parse(raw).tasks ?? SEED) : SEED)
-    } catch {
-      setTasks(SEED)
-    }
+    const d = loadJSON<{ tasks?: Task[] } | null>(STORAGE_KEY, null)
+    setTasks(d?.tasks?.length ? d.tasks : SEED)
   }, [])
 
   const persist = (next: Task[]) => {
     setTasks(next)
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ tasks: next }))
+    saveJSON(STORAGE_KEY, { tasks: next })
   }
 
   const add = () => {

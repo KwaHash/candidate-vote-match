@@ -9,6 +9,7 @@
  * 注意: 動く仕様書（プロトタイプ）。保存は localStorage（本番: activities / impact_scores テーブル）。
  */
 
+import { loadJSON, saveJSON } from '../_store'
 import { useEffect, useMemo, useState } from 'react'
 
 const ACTIVITY_TYPES: { label: string; points: number }[] = [
@@ -47,16 +48,11 @@ export default function ImpactScorePage() {
   const [memo, setMemo] = useState('')
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY)
-      if (raw) setItems(JSON.parse(raw).items ?? [])
-    } catch {
-      /* ignore */
-    }
+    const d = loadJSON<{ items?: Activity[] } | null>(STORAGE_KEY, null)
+    if (d) setItems(d.items ?? [])
   }, [])
 
-  const persist = (next: Activity[]) =>
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ items: next }))
+  const persist = (next: Activity[]) => saveJSON(STORAGE_KEY, { items: next })
 
   const total = useMemo(() => items.reduce((s, i) => s + i.points, 0), [items])
   const level = useMemo(() => [...LEVELS].reverse().find((l) => total >= l.min) ?? LEVELS[0], [total])

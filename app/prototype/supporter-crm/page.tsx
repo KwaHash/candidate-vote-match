@@ -11,6 +11,7 @@
  */
 
 import { POLICY_THEMES } from '../_data'
+import { loadJSON, saveJSON } from '../_store'
 import { useEffect, useMemo, useState } from 'react'
 
 type Kind = 'individual' | 'org'
@@ -54,20 +55,16 @@ export default function SupporterCrmPrototypePage() {
   const [visibility, setVisibility] = useState<Visibility>('private')
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY)
-      if (!raw) return
-      const d = JSON.parse(raw)
+    const d = loadJSON<{ supporters?: Supporter[]; savedAt?: string | null } | null>(STORAGE_KEY, null)
+    if (d) {
       setSupporters(d.supporters ?? [])
       setSavedAt(d.savedAt ?? null)
-    } catch {
-      /* ignore */
     }
   }, [])
 
   const persist = (next: Supporter[]) => {
     const now = new Date().toLocaleString('ja-JP')
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ supporters: next, savedAt: now }))
+    saveJSON(STORAGE_KEY, { supporters: next, savedAt: now })
     setSavedAt(now)
   }
 

@@ -13,6 +13,7 @@
 
 import { policyQuestions } from '@/constants/policy'
 import { parties } from '@/constants/parties'
+import { loadJSON, saveJSON } from '../_store'
 import { useEffect, useMemo, useState } from 'react'
 
 type Importance = 'high' | 'mid' | 'low'
@@ -41,16 +42,11 @@ export default function PolicyStancePrototypePage() {
 
   // 復元
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY)
-      if (raw) {
-        const parsed = JSON.parse(raw)
-        setPartyId(parsed.partyId ?? 1)
-        setStances(parsed.stances ?? {})
-        setSavedAt(parsed.savedAt ?? null)
-      }
-    } catch {
-      /* ignore */
+    const parsed = loadJSON<{ partyId?: number; stances?: StanceMap; savedAt?: string | null } | null>(STORAGE_KEY, null)
+    if (parsed) {
+      setPartyId(parsed.partyId ?? 1)
+      setStances(parsed.stances ?? {})
+      setSavedAt(parsed.savedAt ?? null)
     }
   }, [])
 
@@ -77,10 +73,7 @@ export default function PolicyStancePrototypePage() {
 
   const handleSave = () => {
     const now = new Date().toLocaleString('ja-JP')
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify({ partyId, stances, savedAt: now })
-    )
+    saveJSON(STORAGE_KEY, { partyId, stances, savedAt: now })
     setSavedAt(now)
   }
 

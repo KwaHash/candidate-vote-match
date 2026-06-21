@@ -11,6 +11,7 @@
 
 import { parties } from '@/constants/parties'
 import { REGION_LEVELS, type RegionLevel } from '../_data'
+import { loadJSON, saveJSON } from '../_store'
 import { useEffect, useMemo, useState } from 'react'
 
 interface AchievementRow {
@@ -41,10 +42,9 @@ export default function CandidateProfilePrototypePage() {
   const [savedAt, setSavedAt] = useState<string | null>(null)
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY)
-      if (!raw) return
-      const d = JSON.parse(raw)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const d = loadJSON<any>(STORAGE_KEY, null)
+    if (d) {
       setAvatar(d.avatar ?? '')
       setKanjiName(d.kanjiName ?? '')
       setKanaName(d.kanaName ?? '')
@@ -61,8 +61,6 @@ export default function CandidateProfilePrototypePage() {
       setAcceptDonation(d.acceptDonation ?? true)
       setSupportNeeds(d.supportNeeds ?? ['資金'])
       setSavedAt(d.savedAt ?? null)
-    } catch {
-      /* ignore */
     }
   }, [])
 
@@ -93,14 +91,11 @@ export default function CandidateProfilePrototypePage() {
 
   const handleSave = () => {
     const now = new Date().toLocaleString('ja-JP')
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify({
-        avatar, kanjiName, kanaName, partyId, electionLevel, district, incumbent,
-        education, career, politicalCareer, achievements, sns, website,
-        acceptDonation, supportNeeds, savedAt: now,
-      })
-    )
+    saveJSON(STORAGE_KEY, {
+      avatar, kanjiName, kanaName, partyId, electionLevel, district, incumbent,
+      education, career, politicalCareer, achievements, sns, website,
+      acceptDonation, supportNeeds, savedAt: now,
+    })
     setSavedAt(now)
   }
 
