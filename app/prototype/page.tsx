@@ -118,6 +118,20 @@ const PROTOTYPES = [
       'プロトの生成はテンプレ（LLM不使用）。本番は候補者ごと従量課金',
     ],
   },
+  {
+    href: '/prototype/tasks',
+    title: '選挙活動タスク管理',
+    target: '政治家向け',
+    targetColor: 'bg-violet-100 text-violet-700',
+    status: '作業中',
+    statusColor: 'bg-amber-100 text-amber-700',
+    description:
+      '選挙・政策活動のタスクを未着手/進行中/完了で管理する画面（低優先）。',
+    notes: [
+      'タスク追加・カテゴリ・期限・ステータス切替・進捗バー',
+      '本番: tasks テーブル',
+    ],
+  },
 ]
 
 // 国民向け（seijiselect.jp）のプロトタイプは別リポジトリ next-vote-match に移設。
