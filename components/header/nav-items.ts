@@ -38,7 +38,7 @@ export const navItems: NavEntry[] = [
     label: '情報',
     icon: RiInformation2Line,
     subItems: [
-      { href: '/main-info', label: '基本情報', icon: FaUser },
+      { href: '/profile', label: '候補者プロフィール', icon: FaUser },
       { href: '/policy-stance', label: '政策スタンス', icon: MdPolicy },
       { href: '/support-resource', label: '支援リソース', icon: HiOutlineBookOpen },
     ],

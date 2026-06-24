@@ -43,6 +43,7 @@ export interface ICandidateProfile {
   question_answers?: ProfileQuestionAnswer[]
   website?: ProfileWebsiteLink[]
   custom_items?: ProfileCustomItem[]
+  achievements?: string[]
 }
 
 export interface IProfileForm extends Omit<ICandidateProfile, 'question_answers' | 'website'> {}

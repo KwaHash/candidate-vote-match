@@ -8,7 +8,6 @@ import { Calendar } from '@/components/ui/calendar'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { parties } from '@/constants/parties'
@@ -26,10 +25,9 @@ import Image from 'next/image'
 import { useEffect, useState, type ChangeEvent, type ReactNode } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import type { IconType } from 'react-icons'
-import { FaCalendar, FaImage, FaPlus, FaTrash, FaUser } from 'react-icons/fa'
+import { FaCalendar, FaImage, FaLink, FaPlus, FaTrash, FaTrophy, FaUser } from 'react-icons/fa'
 import { FiUser } from 'react-icons/fi'
 import { HiUserGroup } from 'react-icons/hi2'
-import { PiListHeartBold } from 'react-icons/pi'
 import * as yup from 'yup'
 
 const WEBSITE_FIELD_LABELS: Record<string, string> = {
@@ -116,6 +114,13 @@ const createCustomItemEntry = (label = '', value = ''): CustomItemEntry => ({
   value,
 })
 
+type AchievementEntry = { id: string; text: string }
+
+const createAchievementEntry = (text = ''): AchievementEntry => ({
+  id: `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+  text,
+})
+
 const defaultValues: IProfileForm = {
   kanji_name: '',
   hiragana_name: '',
@@ -139,7 +144,7 @@ const schema = yup.object().shape({
   avatar: yup
     .string()
     .trim()
-    .required('プロフィール画像は必須です')
+    .required('顔写真は必須です')
     .test('avatar-valid', '画像ファイルを選択してください', (value) =>
       isProfileAvatarValue(value)
     ),
@@ -178,6 +183,10 @@ function customItemsFromProfile(items: ProfileCustomItem[] | undefined): CustomI
   return (items ?? []).map((item) => createCustomItemEntry(item.label, item.value))
 }
 
+function achievementsFromProfile(achievements: string[] | undefined): AchievementEntry[] {
+  return (achievements ?? []).map((text) => createAchievementEntry(text))
+}
+
 function profileToFormValues(profile: ICandidateProfile): IProfileForm {
   return {
     ...defaultValues,
@@ -202,7 +211,8 @@ function formToProfilePayload(
   data: IProfileForm,
   questionAnswers: { question: string; answer: string }[],
   websiteLinks: WebsiteLinkEntry[],
-  customItems: CustomItemEntry[]
+  customItems: CustomItemEntry[],
+  achievements: AchievementEntry[]
 ): ICandidateProfile {
   const website = websiteLinks.map((link) => ({
     label: link.label.trim(),
@@ -213,6 +223,10 @@ function formToProfilePayload(
     label: item.label.trim(),
     value: item.value.trim(),
   }))
+
+  const achievementTexts = achievements
+    .map((a) => a.text.trim())
+    .filter((text) => text !== '')
 
   const answeredQuestions = questionAnswers.filter((a) => a.answer.trim() !== '')
 
@@ -228,6 +242,7 @@ function formToProfilePayload(
     question_answers: answeredQuestions.length > 0 ? answeredQuestions : undefined,
     website: website.length > 0 ? website : undefined,
     custom_items: items.length > 0 ? items : undefined,
+    achievements: achievementTexts.length > 0 ? achievementTexts : undefined,
   }
 }
 
@@ -250,6 +265,7 @@ const ProfilePage = () => {
   const [questionAnswers, setQuestionAnswers] = useState(defaultQuestionAnswers)
   const [websiteLinks, setWebsiteLinks] = useState<WebsiteLinkEntry[]>([])
   const [customItems, setCustomItems] = useState<CustomItemEntry[]>([])
+  const [achievements, setAchievements] = useState<AchievementEntry[]>([])
   const [avatarPreviewError, setAvatarPreviewError] = useState(false)
   const [avatarFileName, setAvatarFileName] = useState<string | null>(null)
 
@@ -321,6 +337,7 @@ const ProfilePage = () => {
           setAvatarFileName(null)
           setWebsiteLinks(websiteLinksFromProfile(data.profile.website))
           setCustomItems(customItemsFromProfile(data.profile.custom_items))
+          setAchievements(achievementsFromProfile(data.profile.achievements))
           if (data.profile.question_answers?.length) {
             setQuestionAnswers(
               policyQuestions.map((q) => {
@@ -365,7 +382,7 @@ const ProfilePage = () => {
     }
 
     try {
-      const payload = formToProfilePayload(data, questionAnswers, websiteLinks, customItems)
+      const payload = formToProfilePayload(data, questionAnswers, websiteLinks, customItems, achievements)
       await axios.put('/api/profile', payload, {
         headers: { Authorization: `Bearer ${accessToken}` },
       })
@@ -422,6 +439,20 @@ const ProfilePage = () => {
     )
   }
 
+  const addAchievement = () => {
+    setAchievements((prev) => [...prev, createAchievementEntry('')])
+  }
+
+  const removeAchievement = (id: string) => {
+    setAchievements((prev) => prev.filter((item) => item.id !== id))
+  }
+
+  const updateAchievement = (id: string, text: string) => {
+    setAchievements((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, text } : item))
+    )
+  }
+
   if (isLoading) {
     return <LoadingIndicator />
   }
@@ -433,8 +464,8 @@ const ProfilePage = () => {
         <div className='absolute inset-0 bg-gradient-to-r from-green-600 to-green-600/85' />
         <div className='relative max-w-7xl mx-auto px-4 py-24'>
           <div className='text-center'>
-            <h1 className='text-4xl sm:text-5xl lg:text-6xl font-bold leading-normal tracking-tight text-white'>プロフィール</h1>
-            <p className='mt-6 text-base sm:text-lg md:text-xl !leading-8 sm:!leading-10 text-gray-100'>候補者情報を登録・編集できます</p>
+            <h1 className='text-4xl sm:text-5xl lg:text-6xl font-bold leading-normal tracking-tight text-white'>候補者プロフィール</h1>
+            <p className='mt-6 text-base sm:text-lg md:text-xl !leading-8 sm:!leading-10 text-gray-100'>ここで登録した情報が、国民向けサイトの候補者ページ・政策マッチングの土台になります。</p>
           </div>
         </div>
         <div className='absolute bottom-0 left-0 right-0'>
@@ -450,7 +481,7 @@ const ProfilePage = () => {
       </section>
 
       <section className='w-full max-w-6xl mx-auto px-4 md:px-8 py-12'>
-        <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
+        <form onSubmit={handleSubmit(onSubmit)} className='space-y-3'>
           <div className='overflow-hidden rounded-lg border border-gray-200 bg-white'>
             <div className='flex items-center gap-2 bg-green-600 px-4 py-3 text-white'>
               <FaUser className='h-5 w-5 shrink-0' />
@@ -580,7 +611,7 @@ const ProfilePage = () => {
                 </ProfileFormField>
 
                 <ProfileFormField
-                  label='プロフィール画像'
+                  label='顔写真'
                   htmlFor='avatar-file'
                   icon={FaImage}
                   required
@@ -597,7 +628,7 @@ const ProfilePage = () => {
                       {hasAvatarImage ? (
                         <Image
                           src={avatarValue}
-                          alt='プロフィール画像プレビュー'
+                          alt='顔写真プレビュー'
                           fill
                           unoptimized
                           className='object-cover'
@@ -667,92 +698,6 @@ const ProfilePage = () => {
                     )}
                   />
                 </div>
-              </div>
-              <div className='flex flex-col gap-4 mt-6'>
-                <div className='flex items-center justify-between gap-2'>
-                  <Label className='text-sm font-medium text-gray-800'>SNS・ウェブサイト</Label>
-                  <Button
-                    type='button'
-                    variant='outline'
-                    size='sm'
-                    className='rounded-none border-gray-200 bg-white hover:bg-gray-400 transform duration-300 ease-in-out'
-                    onClick={addWebsiteLink}
-                    disabled={!canAddWebsiteLink}
-                  >
-                    <FaPlus className='mr-1 h-3 w-3' />
-                    追加
-                  </Button>
-                </div>
-                {websiteLinks.length === 0 ? (
-                  <p className='text-sm text-muted-foreground'>
-                    追加ボタンからSNSリンクを登録できます
-                  </p>
-                ) : (
-                  <div className='flex flex-col gap-3'>
-                    {websiteLinks.map((link) => (
-                      <div
-                        key={link.id}
-                        className='flex flex-col gap-2 rounded-md border border-gray-200 p-3 sm:flex-row sm:items-end'
-                      >
-                        <div className='flex flex-1 flex-col gap-2 sm:max-w-[200px]'>
-                          <Label htmlFor={`website-label-${link.id}`} className='text-sm'>
-                            種類
-                          </Label>
-                          <Select
-                            value={link.label || undefined}
-                            onValueChange={(value) =>
-                              updateWebsiteLink(link.id, { label: value })
-                            }
-                          >
-                            <SelectTrigger
-                              id={`website-label-${link.id}`}
-                              className={cn(profileInputClass, 'h-10')}
-                            >
-                              <SelectValue placeholder='種類を選択' />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {WEBSITE_LINK_LABELS.map((label) => {
-                                const isUsed = websiteLinks.some(
-                                  (entry) => entry.label === label && entry.id !== link.id
-                                )
-                                return (
-                                  <SelectItem key={label} value={label} disabled={isUsed}>
-                                    {WEBSITE_FIELD_LABELS[label] ?? label}
-                                  </SelectItem>
-                                )
-                              })}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div className='flex flex-[2] flex-col gap-2'>
-                          <Label htmlFor={`website-url-${link.id}`} className='text-sm'>
-                            URL
-                          </Label>
-                          <Input
-                            id={`website-url-${link.id}`}
-                            type='url'
-                            value={link.url}
-                            placeholder='https://...'
-                            className={profileInputClass}
-                            onChange={(e) =>
-                              updateWebsiteLink(link.id, { url: e.target.value })
-                            }
-                          />
-                        </div>
-                        <Button
-                          type='button'
-                          variant='ghost'
-                          size='sm'
-                          className='shrink-0 hover:bg-transparent text-muted-foreground hover:text-red-600 transform duration-300 ease-in-out'
-                          onClick={() => removeWebsiteLink(link.id)}
-                          aria-label='削除'
-                        >
-                          <FaTrash className='h-4 w-4' />
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
-                )}
               </div>
 
               <div className='flex flex-col gap-4 mt-6'>
@@ -828,41 +773,148 @@ const ProfilePage = () => {
 
           <div className='overflow-hidden rounded-lg border border-gray-200 bg-white'>
             <div className='flex items-center gap-2 bg-green-600 px-4 py-3 text-white'>
-              <PiListHeartBold className='h-5 w-5' />
-              <h2 className='text-base font-bold'>政策</h2>
+              <FaTrophy className='h-5 w-5 shrink-0' />
+              <h2 className='text-base font-bold'>実績</h2>
             </div>
-            <div className='p-6'>
-              {policyQuestions.map((q) => {
-                const current = questionAnswers.find((a) => a.question === q.question)
-                return (
-                  <div key={q.id} className='rounded-sm border border-border overflow-hidden'>
-                    <div className='bg-muted px-4 py-3 border-b border-border'>
-                      <p className='font-bold text-sm leading-relaxed'>
-                        <span>Q.</span> {q.question}
-                      </p>
+            <div className='flex flex-col gap-4 p-6'>
+              <div className='flex items-center justify-between gap-2'>
+                <p className='text-sm text-muted-foreground'>
+                  議会質問・条例・提言・活動などを1件ずつ登録できます
+                </p>
+                <Button
+                  type='button'
+                  variant='outline'
+                  size='sm'
+                  className='shrink-0 rounded-none border-gray-200 bg-white hover:bg-gray-400 transform duration-300 ease-in-out'
+                  onClick={addAchievement}
+                >
+                  <FaPlus className='mr-1 h-3 w-3' />
+                  実績を追加
+                </Button>
+              </div>
+              <div className='flex flex-col gap-3'>
+                {achievements.map((item, index) => (
+                  <div
+                    key={item.id}
+                    className='flex flex-col gap-2 rounded-md border border-gray-200 p-3 sm:flex-row sm:items-end'
+                  >
+                    <div className='flex flex-1 flex-col gap-2'>
+                      <Label htmlFor={`achievement-${item.id}`} className='text-sm'>
+                        実績 {index + 1}
+                      </Label>
+                      <Input
+                        id={`achievement-${item.id}`}
+                        value={item.text}
+                        placeholder='例：2025年 都議会で防災予算の拡充を提言'
+                        className={profileInputClass}
+                        onChange={(e) => updateAchievement(item.id, e.target.value)}
+                      />
                     </div>
-                    <div className='px-4 py-3'>
-                      <RadioGroup
-                        value={current?.answer ?? ''}
-                        onValueChange={(value) => setQuestionAnswer(q.question, value)}
-                        className='space-y-2'
-                      >
-                        {q.options.map((option) => (
-                          <div key={option.value} className='flex items-center gap-3'>
-                            <RadioGroupItem value={option.value} id={`q${q.id}-${option.value}`} />
-                            <Label
-                              htmlFor={`q${q.id}-${option.value}`}
-                              className='text-sm font-normal cursor-pointer leading-relaxed'
-                            >
-                              {option.label}
-                            </Label>
-                          </div>
-                        ))}
-                      </RadioGroup>
-                    </div>
+                    <Button
+                      type='button'
+                      variant='ghost'
+                      size='sm'
+                      className='shrink-0 hover:bg-transparent text-muted-foreground hover:text-red-600 transform duration-300 ease-in-out'
+                      onClick={() => removeAchievement(item.id)}
+                      aria-label='削除'
+                    >
+                      <FaTrash className='h-4 w-4' />
+                    </Button>
                   </div>
-                )
-              })}
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className='overflow-hidden rounded-lg border border-gray-200 bg-white'>
+            <div className='flex items-center gap-2 bg-green-600 px-4 py-3 text-white'>
+              <FaLink className='h-5 w-5 shrink-0' />
+              <h2 className='text-base font-bold'>SNS・ウェブサイト</h2>
+            </div>
+            <div className='flex flex-col gap-4 mt-6 p-6'>
+              <div className='flex items-center justify-between gap-2'>
+                <Button
+                  type='button'
+                  variant='outline'
+                  size='sm'
+                  className='rounded-none border-gray-200 bg-white hover:bg-gray-400 transform duration-300 ease-in-out'
+                  onClick={addWebsiteLink}
+                  disabled={!canAddWebsiteLink}
+                >
+                  <FaPlus className='mr-1 h-3 w-3' />
+                  追加
+                </Button>
+              </div>
+              {websiteLinks.length === 0 ? (
+                <p className='text-sm text-muted-foreground'>
+                  追加ボタンからSNSリンクを登録できます
+                </p>
+              ) : (
+                <div className='flex flex-col gap-3'>
+                  {websiteLinks.map((link) => (
+                    <div
+                      key={link.id}
+                      className='flex flex-col gap-2 rounded-md border border-gray-200 p-3 sm:flex-row sm:items-end'
+                    >
+                      <div className='flex flex-1 flex-col gap-2 sm:max-w-[200px]'>
+                        <Label htmlFor={`website-label-${link.id}`} className='text-sm'>
+                          種類
+                        </Label>
+                        <Select
+                          value={link.label || undefined}
+                          onValueChange={(value) =>
+                            updateWebsiteLink(link.id, { label: value })
+                          }
+                        >
+                          <SelectTrigger
+                            id={`website-label-${link.id}`}
+                            className={cn(profileInputClass, 'h-10')}
+                          >
+                            <SelectValue placeholder='種類を選択' />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {WEBSITE_LINK_LABELS.map((label) => {
+                              const isUsed = websiteLinks.some(
+                                (entry) => entry.label === label && entry.id !== link.id
+                              )
+                              return (
+                                <SelectItem key={label} value={label} disabled={isUsed}>
+                                  {WEBSITE_FIELD_LABELS[label] ?? label}
+                                </SelectItem>
+                              )
+                            })}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className='flex flex-[2] flex-col gap-2'>
+                        <Label htmlFor={`website-url-${link.id}`} className='text-sm'>
+                          URL
+                        </Label>
+                        <Input
+                          id={`website-url-${link.id}`}
+                          type='url'
+                          value={link.url}
+                          placeholder='https://...'
+                          className={profileInputClass}
+                          onChange={(e) =>
+                            updateWebsiteLink(link.id, { url: e.target.value })
+                          }
+                        />
+                      </div>
+                      <Button
+                        type='button'
+                        variant='ghost'
+                        size='sm'
+                        className='shrink-0 hover:bg-transparent text-muted-foreground hover:text-red-600 transform duration-300 ease-in-out'
+                        onClick={() => removeWebsiteLink(link.id)}
+                        aria-label='削除'
+                      >
+                        <FaTrash className='h-4 w-4' />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
