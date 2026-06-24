@@ -8,6 +8,18 @@ export type AccessTokenPayload = {
   user_email: string
 }
 
+export function getAccessToken(): string | null {
+  if (typeof window === 'undefined') return null
+  const tokenData = localStorage.getItem('jwt-token')
+  if (!tokenData) return null
+  try {
+    const { access_token } = JSON.parse(tokenData)
+    return access_token ?? null
+  } catch {
+    return null
+  }
+}
+
 export function getAccessTokenFromRequest(req: NextRequest): string | null {
   const auth = req.headers.get('authorization')
   if (auth?.startsWith('Bearer ')) {

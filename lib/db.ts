@@ -91,6 +91,7 @@ async function initializeDatabase(db: Connection) {
     )
   `)
 
+  // candidate_profiles
   await db.execute(`
     CREATE TABLE IF NOT EXISTS candidate_profiles (
       id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
@@ -106,6 +107,16 @@ async function initializeDatabase(db: Connection) {
       question_answers JSON,
       website JSON,
       custom_items JSON,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    )
+  `)
+
+  // candidate_policy_stances
+  await db.execute(`
+    CREATE TABLE IF NOT EXISTS policy_stances (
+      id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+      candidate_id INT NOT NULL UNIQUE,
+      policy_stance JSON,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     )
   `)
