@@ -300,7 +300,7 @@ const PolicyStancePage = () => {
             <Button
               type='submit'
               variant='default'
-              disabled={isSubmitting}
+              disabled={isSubmitting || !allAnswered}
               className='w-full max-w-64 mt-4 mx-auto h-auto py-3 text-base rounded-full bg-green-600 hover:bg-green-700 transform transition-all duration-300'
             >
               {isSubmitting ? '保存中...' : '政策を保存'}
