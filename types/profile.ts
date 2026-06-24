@@ -14,6 +14,7 @@ export function isProfileAvatarValue(value: string | undefined | null): boolean 
 export type ProfileQuestionAnswer = {
   question: string
   answer: string
+  note?: string
 }
 
 export type ProfileWebsiteLink = {
