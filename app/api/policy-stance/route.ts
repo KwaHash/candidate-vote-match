@@ -1,6 +1,6 @@
 import { getAccessTokenFromRequest, getUserFromAccessToken } from '@/lib/auth'
 import { withDatabase } from '@/lib/db'
-import type { ProfileQuestionAnswer } from '@/types/profile'
+import type { PolicyImportance, ProfileQuestionAnswer } from '@/types/profile'
 import { NextRequest, NextResponse } from 'next/server'
 
 async function ensureVerifiedCandidate(userId: number, userEmail: string) {
@@ -26,6 +26,8 @@ function normalizePolicyStance(value: unknown): ProfileQuestionAnswer[] {
       return {
         question: String(item.question ?? '').trim(),
         answer: String(item.answer ?? '').trim(),
+        importance: String(item.importance ?? '').trim() as PolicyImportance | '',
+        evidence_url: String(item.evidence_url ?? '').trim(),
         ...(note ? { note } : {}),
       }
     })

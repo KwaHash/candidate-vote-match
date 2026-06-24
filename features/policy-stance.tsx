@@ -2,21 +2,25 @@
 
 import LoadingIndicator from '@/components/loading-indicator'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Textarea } from '@/components/ui/textarea'
-import { policyQuestions } from '@/constants/policy'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import { importanceOptions, policyQuestions } from '@/constants/policy'
 import { getAccessToken } from '@/lib/auth'
 import { useAuth } from '@/providers/auth-provider'
-import type { ProfileQuestionAnswer } from '@/types/profile'
+import type { PolicyImportance, ProfileQuestionAnswer } from '@/types/profile'
 import axios from 'axios'
 import { useEffect, useMemo, useState } from 'react'
 import { FaCheck } from 'react-icons/fa6'
 import { MdPolicy } from 'react-icons/md'
 
-const defaultQuestionAnswers = policyQuestions.map((q) => ({
+const defaultQuestionAnswers: ProfileQuestionAnswer[] = policyQuestions.map((q) => ({
   question: q.question,
   answer: '',
+  importance: '',
+  evidence_url: '',
   note: '',
 }))
 
@@ -48,6 +52,8 @@ const PolicyStancePage = () => {
               return {
                 question: q.question,
                 answer: entry?.answer ?? '',
+                importance: entry?.importance ?? '',
+                evidence_url: entry?.evidence_url ?? '',
                 note: entry?.note ?? '',
               }
             })
@@ -74,7 +80,9 @@ const PolicyStancePage = () => {
       .map((a) => ({
         question: a.question,
         answer: a.answer,
-        note: a.note.trim() || undefined,
+        importance: a.importance || undefined,
+        evidence_url: a.evidence_url?.trim() || undefined,
+        note: a.note?.trim() || undefined,
       }))
 
     const accessToken = getAccessToken()
@@ -113,6 +121,18 @@ const PolicyStancePage = () => {
     )
   }
 
+  const setQuestionImportance = (question: string, importance: PolicyImportance | '') => {
+    setQuestionAnswers((prev) =>
+      prev.map((item) => (item.question === question ? { ...item, importance } : item))
+    )
+  }
+
+  const setQuestionEvidenceUrl = (question: string, evidence_url: string) => {
+    setQuestionAnswers((prev) =>
+      prev.map((item) => (item.question === question ? { ...item, evidence_url } : item))
+    )
+  }
+
   const total = policyQuestions.length
   const answered = useMemo(
     () => questionAnswers.filter((a) => a.answer.trim() !== '').length,
@@ -133,7 +153,9 @@ const PolicyStancePage = () => {
         <div className='relative max-w-7xl mx-auto px-4 py-24'>
           <div className='text-center'>
             <h1 className='text-4xl sm:text-5xl lg:text-6xl font-bold leading-normal tracking-tight text-white'>政策スタンス</h1>
-            <p className='mt-6 text-base sm:text-lg md:text-xl !leading-8 sm:!leading-10 text-gray-100'>各政策への賛否を登録・編集できます</p>
+            <p className='mt-6 text-base sm:text-lg md:text-xl !leading-6 sm:!leading-8 text-gray-100'>
+              各争点へのあなたの立場を登録してください。<br />ここで入力した内容が、有権者の「政策で選ぶ」診断の判定に使われます。
+            </p>
           </div>
         </div>
         <div className='absolute bottom-0 left-0 right-0'>
@@ -205,20 +227,59 @@ const PolicyStancePage = () => {
                       </RadioGroup>
 
                       {current?.answer && (
-                        <div className='mt-4 flex flex-col gap-2'>
-                          <Label htmlFor={`q${q.id}-note`}
-                            className='text-sm font-medium text-gray-800'
-                          >
-                            有権者に伝えたい補足（任意）
-                          </Label>
-                          <Textarea
-                            id={`q${q.id}-note`}
-                            rows={2}
-                            value={current.note ?? ''}
-                            placeholder={q.placeholder}
-                            className='resize-none rounded'
-                            onChange={(e) => setQuestionNote(q.question, e.target.value)}
-                          />
+                        <div className='mt-4 flex flex-col gap-4 rounded bg-muted/50 p-3'>
+                          <div className='flex flex-col gap-2'>
+                            <Label className='text-sm font-medium text-gray-800'>重要度（任意）</Label>
+                            <ToggleGroup
+                              type='single'
+                              value={current.importance ?? ''}
+                              onValueChange={(value) =>
+                                setQuestionImportance(q.question, value as PolicyImportance | '')
+                              }
+                              className='justify-start gap-2'
+                            >
+                              {importanceOptions.map((imp) => (
+                                <ToggleGroupItem
+                                  key={imp.value}
+                                  value={imp.value}
+                                  variant='outline'
+                                  size='sm'
+                                  className='px-3 data-[state=on]:bg-green-600 data-[state=on]:text-white hover:bg-green-700 hover:text-white transition-colors duration-300 rounded-full'
+                                >
+                                  {imp.label}
+                                </ToggleGroupItem>
+                              ))}
+                            </ToggleGroup>
+                          </div>
+
+                          <div className='flex flex-col gap-2'>
+                            <Label htmlFor={`q${q.id}-evidence`} className='text-sm font-medium text-gray-800'>根拠URL（任意）</Label>
+                            <Input
+                              id={`q${q.id}-evidence`}
+                              type='url'
+                              inputMode='url'
+                              value={current.evidence_url ?? ''}
+                              placeholder='https://...'
+                              className='rounded'
+                              onChange={(e) => setQuestionEvidenceUrl(q.question, e.target.value)}
+                            />
+                          </div>
+
+                          <div className='flex flex-col gap-2'>
+                            <Label htmlFor={`q${q.id}-note`}
+                              className='text-sm font-medium text-gray-800'
+                            >
+                              有権者に伝えたい補足（任意）
+                            </Label>
+                            <Textarea
+                              id={`q${q.id}-note`}
+                              rows={2}
+                              value={current.note ?? ''}
+                              placeholder={q.placeholder}
+                              className='resize-none rounded bg-background'
+                              onChange={(e) => setQuestionNote(q.question, e.target.value)}
+                            />
+                          </div>
                         </div>
                       )}
                     </div>
@@ -239,7 +300,7 @@ const PolicyStancePage = () => {
             <Button
               type='submit'
               variant='default'
-              disabled={isSubmitting || !allAnswered}
+              disabled={isSubmitting}
               className='w-full max-w-64 mt-4 mx-auto h-auto py-3 text-base rounded-full bg-green-600 hover:bg-green-700 transform transition-all duration-300'
             >
               {isSubmitting ? '保存中...' : '政策を保存'}
