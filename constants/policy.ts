@@ -1,3 +1,9 @@
+export const importanceOptions = [
+  { value: 'high', label: '高' },
+  { value: 'mid', label: '中' },
+  { value: 'low', label: '低' }
+] as const
+
 export const policyQuestions = [
   {
     id: 1,

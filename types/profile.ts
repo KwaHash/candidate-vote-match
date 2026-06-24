@@ -11,9 +11,13 @@ export function isProfileAvatarValue(value: string | undefined | null): boolean 
   )
 }
 
+export type PolicyImportance = 'high' | 'mid' | 'low'
+
 export type ProfileQuestionAnswer = {
   question: string
   answer: string
+  importance?: PolicyImportance | ''
+  evidence_url?: string
   note?: string
 }
 
