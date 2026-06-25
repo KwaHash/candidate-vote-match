@@ -98,13 +98,16 @@ async function initializeDatabase(db: Connection) {
       candidate_id INT NOT NULL UNIQUE,
       kanji_name VARCHAR(255) NOT NULL,
       hiragana_name VARCHAR(255) NOT NULL,
+      avatar VARCHAR(255) NOT NULL,
       party VARCHAR(255) NOT NULL,
       birth_date VARCHAR(255) NOT NULL,
-      avatar MEDIUMTEXT NOT NULL,
-      title VARCHAR(255),
-      origin VARCHAR(255),
-      biography TEXT,
-      question_answers JSON,
+      election_level VARCHAR(255) NOT NULL,
+      district VARCHAR(255) NOT NULL,
+      position VARCHAR(255) NOT NULL,
+      education VARCHAR(255),
+      career VARCHAR(255),
+      political_career VARCHAR(255),
+      achievements JSON,
       website JSON,
       custom_items JSON,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -113,7 +116,7 @@ async function initializeDatabase(db: Connection) {
 
   // candidate_policy_stances
   await db.execute(`
-    CREATE TABLE IF NOT EXISTS policy_stances (
+    CREATE TABLE IF NOT EXISTS candidate_policy_stances (
       id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
       candidate_id INT NOT NULL UNIQUE,
       policy_stance JSON,

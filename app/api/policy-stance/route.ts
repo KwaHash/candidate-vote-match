@@ -1,6 +1,6 @@
 import { getAccessTokenFromRequest, getUserFromAccessToken } from '@/lib/auth'
 import { withDatabase } from '@/lib/db'
-import type { PolicyImportance, ProfileQuestionAnswer } from '@/types/profile'
+import type { PolicyImportance, ProfileQuestionAnswer } from '@/types/type.profile'
 import { NextRequest, NextResponse } from 'next/server'
 
 async function ensureVerifiedCandidate(userId: number, userEmail: string) {
@@ -48,7 +48,7 @@ export async function GET(req: NextRequest) {
 
     const policyStance = await withDatabase(async (db) => {
       const [rows]: any = await db.query(
-        'SELECT policy_stance FROM policy_stances WHERE candidate_id = ?',
+        'SELECT policy_stance FROM candidate_policy_stances WHERE candidate_id = ?',
         [authUser.user_id]
       )
       const raw = rows[0]?.policy_stance
@@ -87,7 +87,7 @@ export async function PUT(req: NextRequest) {
 
     await withDatabase(async (db) => {
       await db.query(
-        `INSERT INTO policy_stances (candidate_id, policy_stance)
+        `INSERT INTO candidate_policy_stances (candidate_id, policy_stance)
          VALUES (?, ?)
          ON DUPLICATE KEY UPDATE policy_stance = VALUES(policy_stance)`,
         [authUser.user_id, value]
