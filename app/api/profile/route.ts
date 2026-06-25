@@ -1,12 +1,11 @@
 import { getAccessTokenFromRequest, getUserFromAccessToken } from '@/lib/auth'
 import { withDatabase } from '@/lib/db'
 import {
-  isProfileAvatarValue,
   type ICandidateProfile,
   type ProfileCustomItem,
-  type ProfileQuestionAnswer,
-  type ProfileWebsiteLink,
-} from '@/types/profile'
+  type ProfileWebsiteLink
+} from '@/types/type.profile'
+import { isProfileAvatarValue } from '@/utils/util.profile'
 import { NextRequest, NextResponse } from 'next/server'
 
 const REQUIRED_FIELDS = [
@@ -33,13 +32,16 @@ function rowToProfile(row: Record<string, unknown>): ICandidateProfile {
   return {
     kanji_name: String(row.kanji_name ?? ''),
     hiragana_name: String(row.hiragana_name ?? ''),
+    avatar: String(row.avatar ?? ''),
     party: String(row.party ?? ''),
     birth_date: String(row.birth_date ?? ''),
-    avatar: String(row.avatar ?? ''),
-    title: row.title != null ? String(row.title) : undefined,
-    origin: row.origin != null ? String(row.origin) : undefined,
-    biography: row.biography != null ? String(row.biography) : undefined,
-    question_answers: parseJsonField<ProfileQuestionAnswer[]>(row.question_answers) ?? undefined,
+    election_level: String(row.election_level ?? ''),
+    district: String(row.district ?? ''),
+    position: String(row.position ?? ''),
+    education: String(row.education ?? ''),
+    career: String(row.career ?? ''),
+    political_career: String(row.political_career ?? ''),
+    achievements: parseJsonField<string[]>(row.achievements) ?? undefined,
     website: parseJsonField<ProfileWebsiteLink[]>(row.website) ?? undefined,
     custom_items: parseJsonField<ProfileCustomItem[]>(row.custom_items) ?? undefined,
   }
@@ -62,30 +64,11 @@ function validateProfileBody(body: Record<string, unknown>): string | null {
   return null
 }
 
-async function ensureVerifiedCandidate(userId: number, userEmail: string) {
-  return withDatabase(async (db) => {
-    const [rows]: any = await db.query(
-      'SELECT id, email, is_verified FROM candidates WHERE id = ?',
-      [userId]
-    )
-    const user = rows[0]
-    if (!user || user.id !== userId || user.email !== userEmail || !user.is_verified) {
-      return false
-    }
-    return true
-  })
-}
-
 export async function GET(req: NextRequest) {
   try {
     const accessToken = getAccessTokenFromRequest(req)
     const authUser = getUserFromAccessToken(accessToken)
     if (!authUser) {
-      return NextResponse.json({ error: '認証が必要です。' }, { status: 401 })
-    }
-
-    const isVerified = await ensureVerifiedCandidate(authUser.user_id, authUser.user_email)
-    if (!isVerified) {
       return NextResponse.json({ error: '認証が必要です。' }, { status: 401 })
     }
 
@@ -116,11 +99,6 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: '認証が必要です。' }, { status: 401 })
     }
 
-    const isVerified = await ensureVerifiedCandidate(authUser.user_id, authUser.user_email)
-    if (!isVerified) {
-      return NextResponse.json({ error: '認証が必要です。' }, { status: 401 })
-    }
-
     const body = await req.json()
     const validationError = validateProfileBody(body)
     if (validationError) {
@@ -130,54 +108,61 @@ export async function PUT(req: NextRequest) {
     const profile: ICandidateProfile = {
       kanji_name: String(body.kanji_name).trim(),
       hiragana_name: String(body.hiragana_name).trim(),
+      avatar: String(body.avatar).trim(),
       party: String(body.party).trim(),
       birth_date: String(body.birth_date).trim(),
-      avatar: String(body.avatar).trim(),
-      title: body.title != null ? String(body.title).trim() || undefined : undefined,
-      origin: body.origin != null ? String(body.origin).trim() || undefined : undefined,
-      biography: body.biography != null ? String(body.biography).trim() || undefined : undefined,
-      question_answers: Array.isArray(body.question_answers) ? body.question_answers : undefined,
+      election_level: String(body.election_level).trim(),
+      district: String(body.district).trim(),
+      position: String(body.position).trim(),
+      education: String(body.education).trim(),
+      career: String(body.career).trim(),
+      political_career: String(body.political_career).trim(),
+      achievements: Array.isArray(body.achievements) ? body.achievements : undefined,
       website: Array.isArray(body.website) ? body.website : undefined,
       custom_items: Array.isArray(body.custom_items) ? body.custom_items : undefined,
     }
 
     await withDatabase(async (db) => {
-      const [existing]: any = await db.query(
-        'SELECT id FROM candidate_profiles WHERE candidate_id = ?',
-        [authUser.user_id]
-      )
-
       const values = [
         profile.kanji_name,
         profile.hiragana_name,
+        profile.avatar,
         profile.party,
         profile.birth_date,
-        profile.avatar,
-        profile.title ?? null,
-        profile.origin ?? null,
-        profile.biography ?? null,
-        profile.question_answers ? JSON.stringify(profile.question_answers) : null,
+        profile.election_level,
+        profile.district,
+        profile.position,
+        profile.education,
+        profile.career,
+        profile.political_career,
+        profile.achievements ? JSON.stringify(profile.achievements) : null,
         profile.website ? JSON.stringify(profile.website) : null,
         profile.custom_items ? JSON.stringify(profile.custom_items) : null,
       ]
 
-      if (existing[0]) {
-        await db.query(
-          `UPDATE candidate_profiles SET
-            kanji_name = ?, hiragana_name = ?, party = ?, birth_date = ?, avatar = ?,
-            title = ?, origin = ?, biography = ?, question_answers = ?, website = ?, custom_items = ?
-          WHERE candidate_id = ?`,
-          [...values, authUser.user_id]
-        )
-      } else {
-        await db.query(
-          `INSERT INTO candidate_profiles (
-            candidate_id, kanji_name, hiragana_name, party, birth_date, avatar,
-            title, origin, biography, question_answers, website, custom_items
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-          [authUser.user_id, ...values]
-        )
-      }
+      await db.query(
+        `INSERT INTO candidate_profiles (
+          candidate_id, kanji_name, hiragana_name, avatar, party, birth_date,
+          election_level, district, position, education, career, political_career,
+          achievements, website, custom_items
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE
+          kanji_name = VALUES(kanji_name),
+          hiragana_name = VALUES(hiragana_name),
+          avatar = VALUES(avatar),
+          party = VALUES(party),
+          birth_date = VALUES(birth_date),
+          election_level = VALUES(election_level),
+          district = VALUES(district),
+          position = VALUES(position),
+          education = VALUES(education),
+          career = VALUES(career),
+          political_career = VALUES(political_career),
+          achievements = VALUES(achievements),
+          website = VALUES(website),
+          custom_items = VALUES(custom_items)`,
+        [authUser.user_id, ...values]
+      )
     })
 
     return NextResponse.json({ profile })
