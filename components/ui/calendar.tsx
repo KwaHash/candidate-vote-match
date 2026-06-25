@@ -84,6 +84,8 @@ function Calendar({
   showOutsideDays = true,
   captionLayout,
   components,
+  modifiers,
+  modifiersClassNames,
   ...props
 }: CalendarProps) {
   const useDropdownButtonsCaption = captionLayout === 'dropdown-buttons'
@@ -97,7 +99,7 @@ function Calendar({
         months: 'flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0',
         month: 'space-y-4',
         caption: 'relative flex w-full items-center pt-1',
-        caption_dropdowns: 'flex items-center justify-center gap-3',
+        caption_dropdowns: 'flex flex-row-reverse items-center justify-center gap-3',
         dropdown_month: 'relative inline-flex items-center px-0.5',
         dropdown_year: 'relative inline-flex items-center px-0.5',
         dropdown: 'absolute inset-0 z-[1] h-full w-full cursor-pointer opacity-0 text-sm',
@@ -116,7 +118,7 @@ function Calendar({
         head_cell:
           'text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]',
         row: 'flex w-full mt-2',
-        cell: 'h-9 w-9 text-center text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-green-600/20 [&:has([aria-selected])]:bg-green-600/10 first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20',
+        cell: 'h-9 w-9 text-center text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20',
         day: cn(
           buttonVariants({ variant: 'ghost' }),
           'h-9 w-9 p-0 font-normal !rounded-full hover:bg-gray-200 hover:text-gray-900 aria-selected:opacity-100'
@@ -141,6 +143,11 @@ function Calendar({
           ? { Caption: CalendarDropdownButtonsCaption }
           : {}),
         ...components,
+      }}
+      modifiers={{ sunday: (date) => date.getDay() === 0, ...modifiers }}
+      modifiersClassNames={{
+        sunday: '[&:not([aria-selected])]:text-red-600',
+        ...modifiersClassNames,
       }}
       {...props}
     />
