@@ -1,6 +1,6 @@
 'use client'
 
-import ResourceItem from '@/components/list-item/resource-item'
+import ResourceItem from '@/components/item/resource-item'
 import LoadingIndicator from '@/components/loading-indicator'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'

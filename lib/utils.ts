@@ -104,7 +104,7 @@ const escapeCsvCell = (value: string | number | undefined | null): string => {
 }
 
 const LINK_HEADERS_JA: Record<string, string> = {
-  homepage: 'ホームページ',
+  homepage: '公式サイト',
   facebook: 'Facebook',
   twitter: 'Twitter',
   youtube: 'YouTube',
