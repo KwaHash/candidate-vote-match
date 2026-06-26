@@ -2,6 +2,20 @@ import Link from 'next/link'
 
 const PROTOTYPES = [
   {
+    href: '/prototype/dashboard',
+    title: 'ダッシュボード（ホーム）',
+    target: '政治家向け',
+    targetColor: 'bg-violet-100 text-violet-700',
+    status: '作業中',
+    statusColor: 'bg-amber-100 text-amber-700',
+    description:
+      'ログイン後のホーム・司令塔。タスク・クラファン進捗・支援者・政策実装スコア・注目度を集約し、「今日やること」をAIが助言する。',
+    notes: [
+      '各画面のデータを集約表示・要対応を可視化',
+      'AIアシスト（今日やること）。本番は各テーブル集計＋LLM',
+    ],
+  },
+  {
     href: '/prototype/policy-stance',
     title: '政策スタンス入力',
     target: '政治家向け',
@@ -158,6 +172,34 @@ const PROTOTYPES = [
     notes: [
       'チャネル・セグメント別の投稿案を生成、今日の投稿候補',
       'リマインダー一覧（本番: community_posts / reminders、炎上チェック・承認フロー）',
+    ],
+  },
+  {
+    href: '/prototype/ai-avatar',
+    title: '候補者AIアバター設定',
+    target: '政治家向け',
+    targetColor: 'bg-violet-100 text-violet-700',
+    status: '作業中',
+    statusColor: 'bg-amber-100 text-amber-700',
+    description:
+      'プロフィール・政策スタンスを土台に、有権者の質問へ答えるAIアバターを設定する。トーン・重点メッセージを設定し回答をプレビュー。国民向けで有権者対応する想定。',
+    notes: [
+      'トーン/重点メッセージ/未回答時の対応を設定',
+      'プレビューQ&A（政策テーマを含むと政策スタンスを踏まえて回答）。プロトはテンプレ',
+    ],
+  },
+  {
+    href: '/prototype/donor-report',
+    title: '寄付者への成果報告',
+    target: '政治家向け',
+    targetColor: 'bg-violet-100 text-violet-700',
+    status: '作業中',
+    statusColor: 'bg-amber-100 text-amber-700',
+    description:
+      '「集めた寄付 → 使い道 → 成果」を寄付者に返す報告を作成する。透明化の出口・継続支援につながる（DON→IMP）。',
+    notes: [
+      'Before/使い道/成果/メッセージを入力、AIで下書き',
+      '送信済み報告を一覧。本番は寄付ID→成果IDを紐づけ配信',
     ],
   },
 ]

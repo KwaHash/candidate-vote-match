@@ -38,6 +38,8 @@ export const STORE_KEYS = {
   impactScore: 'proto_impact_score_v1',
   supportRequest: 'proto_support_request_v1',
   tasks: 'proto_campaign_tasks_v1',
+  aiAvatar: 'proto_ai_avatar_v1', // → candidate_avatars（AIアバター設定）
+  donorReport: 'proto_donor_report_v1', // → impact_reports（寄付者への成果報告）
 } as const
 
 /** 読み込み。データが無い/壊れている場合は fallback を返す。 */

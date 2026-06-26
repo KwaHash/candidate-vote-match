@@ -80,3 +80,9 @@
 - `app/prototype/_store.ts` を追加し、全画面の保存処理を loadJSON/saveJSON に集約。
 - 本番（Supabase）化は **_store.ts の中身だけ差し替え**れば全画面が本番DBに繋がる（呼び出し側は変更不要）。
 - key→テーブル対応表・Supabase差し替え例・SQLは _store.ts と「発注文_政治家側_1ヶ月版.md」に記載。
+
+## 司令塔・双方向・出口（2026-06-20 追加）
+- ダッシュボード（ホーム） `/prototype/dashboard`: タスク/クラファン/支援者/実装スコア/注目度を集約＋AIアシスト「今日やること」。各画面のデータを集約表示。
+- 候補者AIアバター設定 `/prototype/ai-avatar`: プロフィール・政策スタンスを土台に有権者の質問へテンプレ回答。トーン/重点メッセージ設定＋プレビューQ&A。
+- 寄付者への成果報告 `/prototype/donor-report`: Before/使い道/成果/メッセージ（AI下書き）→ 透明化の出口（DON→IMP）。
+- _store.ts に aiAvatar / donorReport キーを追加。
