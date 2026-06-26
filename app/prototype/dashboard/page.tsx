@@ -172,6 +172,7 @@ export default function CandidateDashboardPage() {
       <div className='grid grid-cols-2 gap-2 sm:grid-cols-3'>
         {[
           ['AI政策室', '/prototype/policy-ai'],
+          ['自動化センター', '/prototype/automation'],
           ['AIツール連携', '/prototype/ai-tools'],
           ['候補者AIアバター', '/prototype/ai-avatar'],
           ['寄付者への成果報告', '/prototype/donor-report'],

@@ -216,6 +216,20 @@ const PROTOTYPES = [
       '6ツールを連携。本番はAPIキー暗号化保存＋課金制御',
     ],
   },
+  {
+    href: '/prototype/automation',
+    title: 'AIエージェント / 自動化センター',
+    target: '政治家向け',
+    targetColor: 'bg-violet-100 text-violet-700',
+    status: '作業中',
+    statusColor: 'bg-amber-100 text-amber-700',
+    description:
+      '自律エージェント（参謀/コミュニティ運営/有権者対応/支援マッチング/コンプラ監視）と裏方自動化（データ取込/透明化集計）を管理し、AIが下書き・実行した項目を承認する司令塔。',
+    notes: [
+      'エージェントON/OFF＋承認待ちフィード（承認/却下）',
+      '設計: バッチ＋キャッシュ/人が承認/イベント駆動。既存スクレイピング・通知基盤と連携',
+    ],
+  },
 ]
 
 // 国民向け（seijiselect.jp）のプロトタイプは別リポジトリ next-vote-match に移設。
