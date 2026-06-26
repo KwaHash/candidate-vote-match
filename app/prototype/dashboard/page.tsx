@@ -176,6 +176,7 @@ export default function CandidateDashboardPage() {
           ['AIツール連携', '/prototype/ai-tools'],
           ['候補者AIアバター', '/prototype/ai-avatar'],
           ['寄付者への成果報告', '/prototype/donor-report'],
+          ['定期献金・お願い管理', '/prototype/donation-manage'],
           ['コミュニティ管理', '/prototype/community'],
           ['プロフィール', '/prototype/candidate-profile'],
         ].map(([label, href]) => (

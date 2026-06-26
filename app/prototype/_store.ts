@@ -42,6 +42,7 @@ export const STORE_KEYS = {
   donorReport: 'proto_donor_report_v1', // → impact_reports（寄付者への成果報告）
   aiTools: 'proto_ai_tools_v1', // → ai_tool_integrations（外部AIツールのAPI連携・プラン）
   automation: 'proto_automation_v1', // → automation_agents（エージェントON/OFF設定）
+  recurringDonation: 'proto_recurring_donation_v1', // → recurring_plans / donation_campaigns（定期献金・献金キャンペーン）
 } as const
 
 /** 読み込み。データが無い/壊れている場合は fallback を返す。 */

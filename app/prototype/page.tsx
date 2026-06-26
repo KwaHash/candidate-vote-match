@@ -230,6 +230,20 @@ const PROTOTYPES = [
       '設計: バッチ＋キャッシュ/人が承認/イベント駆動。既存スクレイピング・通知基盤と連携',
     ],
   },
+  {
+    href: '/prototype/donation-manage',
+    title: '定期献金・献金のお願い管理',
+    target: '政治家向け',
+    targetColor: 'bg-violet-100 text-violet-700',
+    status: '作業中',
+    statusColor: 'bg-amber-100 text-amber-700',
+    description:
+      '定期献金（サブスク）と「献金のお願い」キャンペーンを管理。受け取りはプラットフォーム集約（決済代行）方式。MRR・定期支援者・手数料/振込見込みを可視化。',
+    notes: [
+      '定期献金プラン（月額）設定・献金のお願い作成（AI下書き）・配信先',
+      '本番は決済代行＋政治資金規正法対応（本人確認/上限/国籍/収支報告）',
+    ],
+  },
 ]
 
 // 国民向け（seijiselect.jp）のプロトタイプは別リポジトリ next-vote-match に移設。
