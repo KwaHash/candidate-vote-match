@@ -149,14 +149,33 @@ export default function CandidateDashboardPage() {
         <p className='mt-2 text-[11px] text-gray-400'>※ 本番は国民向けサイトの実データを集計。</p>
       </div>
 
+      {/* ヒト・モノ・カネを集める仕組み */}
+      <div className={`${card} mb-5`}>
+        <p className='mb-3 text-xs font-bold text-gray-700'>支援を集める（ヒト・モノ・カネ）</p>
+        <div className='grid grid-cols-3 gap-2 text-center'>
+          {[
+            { icon: '🧑‍🤝‍🧑', label: 'ヒト', href: '/prototype/supporter-crm', sub: '支援者CRM・募集' },
+            { icon: '📦', label: 'モノ', href: '/prototype/support-request', sub: '物品・会場・車両' },
+            { icon: '💴', label: 'カネ', href: '/prototype/crowdfunding', sub: 'クラファン・寄付' },
+          ].map((x) => (
+            <Link key={x.label} href={x.href} className='rounded-lg border border-gray-100 p-3 transition-colors hover:bg-gray-50'>
+              <div className='text-2xl'>{x.icon}</div>
+              <p className='mt-1 text-sm font-bold text-gray-900'>{x.label}</p>
+              <p className='text-[10px] text-gray-400'>{x.sub}</p>
+            </Link>
+          ))}
+        </div>
+        <p className='mt-2 text-[11px] text-gray-400'>※ 3つとも実装済み。モノ・人の募集は支援者サイト(assist)に連携。</p>
+      </div>
+
       {/* クイックリンク */}
       <div className='grid grid-cols-2 gap-2 sm:grid-cols-3'>
         {[
           ['AI政策室', '/prototype/policy-ai'],
+          ['AIツール連携', '/prototype/ai-tools'],
           ['候補者AIアバター', '/prototype/ai-avatar'],
           ['寄付者への成果報告', '/prototype/donor-report'],
           ['コミュニティ管理', '/prototype/community'],
-          ['支出・証憑', '/prototype/expenses'],
           ['プロフィール', '/prototype/candidate-profile'],
         ].map(([label, href]) => (
           <Link key={href} href={href} className='rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-center text-xs font-medium text-gray-700 transition-colors hover:bg-gray-50'>{label}</Link>

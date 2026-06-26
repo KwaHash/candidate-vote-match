@@ -202,6 +202,20 @@ const PROTOTYPES = [
       '送信済み報告を一覧。本番は寄付ID→成果IDを紐づけ配信',
     ],
   },
+  {
+    href: '/prototype/ai-tools',
+    title: 'AIツール連携（外部AI・API）',
+    target: '政治家向け',
+    targetColor: 'bg-violet-100 text-violet-700',
+    status: '作業中',
+    statusColor: 'bg-amber-100 text-amber-700',
+    description:
+      '外部の選挙AIツール（参謀AI/自己分析AI/世論調査AI/政策ブレーンAI/分身AI/適法チェックAI）をAPIキーで連携。一部はプロプランで解放。分身AIは候補者AIアバターに対応。',
+    notes: [
+      'APIキー設定＋プラン（無料/プロ）で解放制御',
+      '6ツールを連携。本番はAPIキー暗号化保存＋課金制御',
+    ],
+  },
 ]
 
 // 国民向け（seijiselect.jp）のプロトタイプは別リポジトリ next-vote-match に移設。

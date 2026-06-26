@@ -40,6 +40,7 @@ export const STORE_KEYS = {
   tasks: 'proto_campaign_tasks_v1',
   aiAvatar: 'proto_ai_avatar_v1', // → candidate_avatars（AIアバター設定）
   donorReport: 'proto_donor_report_v1', // → impact_reports（寄付者への成果報告）
+  aiTools: 'proto_ai_tools_v1', // → ai_tool_integrations（外部AIツールのAPI連携・プラン）
 } as const
 
 /** 読み込み。データが無い/壊れている場合は fallback を返す。 */
