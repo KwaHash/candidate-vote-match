@@ -2,6 +2,20 @@ import Link from 'next/link'
 
 const PROTOTYPES = [
   {
+    href: '/prototype/lp',
+    title: '公開トップページ（HP案 / LP）',
+    target: '政治家向け',
+    targetColor: 'bg-violet-100 text-violet-700',
+    status: '作業中',
+    statusColor: 'bg-amber-100 text-amber-700',
+    description:
+      '登録前の公開ランディングページ案。6つのAIツールとプラットフォーム機能を訴求し、料金プラン（無料/プロ）とCTAで登録・AIツールへ誘導。「事前に作るウェブ画面」のたたき台。',
+    notes: [
+      'Hero／課題提起／AIツール6種／機能／料金／CTA の構成',
+      '文言・価格はサンプル。各CTAはダッシュボード・AIツールへ誘導',
+    ],
+  },
+  {
     href: '/prototype/dashboard',
     title: 'ダッシュボード（ホーム）',
     target: '政治家向け',
