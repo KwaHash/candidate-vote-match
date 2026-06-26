@@ -2,8 +2,22 @@ import Link from 'next/link'
 
 const PROTOTYPES = [
   {
+    href: '/prototype/lp-full',
+    title: '全機能LP（HP案・包括版）',
+    target: '政治家向け',
+    targetColor: 'bg-violet-100 text-violet-700',
+    status: '作業中',
+    statusColor: 'bg-amber-100 text-amber-700',
+    description:
+      '政治家向けの全17機能を5カテゴリ（政策/資金/ヒト・モノ/有権者/自動化）に整理して訴求する公開LP。各機能カードから実画面に遷移できる＝動く製品ツアー。',
+    notes: [
+      'Hero／カテゴリ別 全機能（クリックで各画面へ）／料金／CTA',
+      '6AI・自動化・定期献金まで網羅。文言・価格はサンプル',
+    ],
+  },
+  {
     href: '/prototype/lp',
-    title: '公開トップページ（HP案 / LP）',
+    title: '公開トップページ（HP案 / LP・AI訴求版）',
     target: '政治家向け',
     targetColor: 'bg-violet-100 text-violet-700',
     status: '作業中',
