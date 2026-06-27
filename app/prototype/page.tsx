@@ -71,8 +71,18 @@ export default function PrototypeIndexPage() {
 
       {/* コンプライアンス注意 */}
       <div className='mb-6 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs leading-relaxed text-amber-800'>
-        <span className='font-semibold'>コンプライアンス注意:</span>{' '}
-        本サービスは政治活動・選挙運動・献金管理を支援するものです。実際の公開・送信・献金募集・収支報告にあたっては、政治資金規正法、公職選挙法、各自治体選挙管理委員会のルールを確認してください。
+        <p><span className='font-semibold'>コンプライアンス注意:</span>{' '}
+        本サービスは政治活動・選挙運動・献金管理を支援するものです。実際の公開・送信・献金募集・収支報告にあたっては、政治資金規正法、公職選挙法、各選挙管理委員会のルールを確認してください。</p>
+        <p className='mt-2 font-semibold'>特に献金・寄付では以下に注意（実決済は本人確認・法務確認後に提供）:</p>
+        <ul className='mt-1 list-disc space-y-0.5 pl-4'>
+          <li><span className='font-semibold'>外国人・外国法人からの寄付は禁止</span>。受領側が罰せられるため、寄付受付には本人確認・<span className='font-semibold'>国籍確認</span>が必要。</li>
+          <li><span className='font-semibold'>匿名寄付・他人名義（借名）寄付は禁止</span>。匿名で寄付できる導線は作りません。</li>
+          <li>候補者<span className='font-semibold'>本人への直接の金銭寄付は原則禁止</span>。政党・後援会・資金管理団体を通すのが原則。</li>
+          <li><span className='font-semibold'>企業・団体献金</span>は宛先・上限が制限。当面は導線を出しません。</li>
+          <li>候補者・後援会が<span className='font-semibold'>選挙区内の人へ寄付・物品・飲食を提供することは禁止</span>（公選法199の2・139）。</li>
+          <li>AIが作成したメールでの<span className='font-semibold'>選挙運動は不可</span>。発信は「下書き→本人承認」、メールでの投票依頼は送りません。</li>
+        </ul>
+        <p className='mt-2 text-[11px]'>※ 一般的な注意喚起です。機能の実装前に選挙法・政治資金規正法に詳しい弁護士・選挙管理委員会にご確認ください。</p>
       </div>
 
       {/* 5メニュー */}
