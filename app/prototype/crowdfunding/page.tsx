@@ -139,9 +139,12 @@ export default function CrowdfundingPrototypePage() {
           <span className='h-1.5 w-1.5 rounded-full bg-rose-500' />
           プロトタイプ / 政治家向け
         </div>
-        <h1 className='text-2xl font-bold text-gray-900'>クラウドファンディング作成</h1>
+        <h1 className='text-2xl font-bold text-gray-900'>政策応援ページ作成</h1>
         <p className='mt-1 text-sm text-gray-500'>
-          政策単位でプロジェクトを立ち上げます。ここで集めた寄付は、政策テーマ・地域・支出計画に紐づいて追跡されます。
+          政策単位で「応援ページ」を立ち上げます。献金・ボランティア・拡散・意見など、政策ごとの支援を募ります。
+        </p>
+        <p className='mt-2 rounded-lg bg-amber-50 px-3 py-2 text-[11px] leading-relaxed text-amber-800'>
+          献金・寄付・選挙運動に関する取り扱いは、政治資金規正法・公職選挙法等の確認が必要です。公開前に必ず専門家または選挙管理委員会等に確認してください。
         </p>
       </div>
 
