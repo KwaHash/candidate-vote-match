@@ -121,3 +121,6 @@
 - `app/prototype/public-answers/page.tsx`（新規）**公開質問への回答**: 国民側「公開質問ボード」で投票上位→運営adminが全候補者へ同一条件送付→政治家が回答（本文/公式リンク/添付）→提出（運営確認へ）→運営確認後に国民側へ「回答済み/未回答」公開。保存は `_store`（key `publicAnswers` → candidate_question_answers）。中立運用・メール選挙運動不可の注意つき。
 - メニュー#3「発信をつくる」に「公開質問への回答」を追加。
 - docs更新: 実装仕様書に §9「国民側機能・運営adminとの連携」（公開質問ボード回答／選挙AI相談室への情報提供／国と地域の課題・政策提言の紐づけ／役割分担）、Supabase `candidate_question_answers` を追加。依頼メッセージにも連携セクションを追記。
+
+## 公開質問ボード 正準スキーマ統一（2026-06）— 政治家側
+- `app/prototype/_qboard.ts`（3アプリ同一・コピー）を追加。public-answers を正準へ（question_id=国民側と同一値・electionId・themeKey・AnswerStatus／answerText・answeredAt）。回答辞退を追加。store key publicAnswers を v2 に。
