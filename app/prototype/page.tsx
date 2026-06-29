@@ -20,6 +20,7 @@ const MENU: Menu[] = [
     n: 3, icon: '📣', title: '発信をつくる', lead: 'AIが下書き、人が承認。', items: [
       { name: 'AI政策秘書（発信）', href: '/prototype/ai-secretary', note: 'SNS/議会質問/想定問答/お礼文' },
       { name: 'LINE・SNS発信', href: '/prototype/community', note: '投稿案・配信文（複雑なセグメントは後回し）' },
+      { name: '公開質問への回答', href: '/prototype/public-answers', note: '国民側「公開質問ボード」連携。上位質問に回答→運営確認→公開（未回答は未回答と表示）' },
     ],
   },
   {

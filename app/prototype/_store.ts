@@ -43,6 +43,7 @@ export const STORE_KEYS = {
   aiTools: 'proto_ai_tools_v1', // → ai_tool_integrations（外部AIツールのAPI連携・プラン）
   automation: 'proto_automation_v1', // → automation_agents（エージェントON/OFF設定）
   recurringDonation: 'proto_recurring_donation_v1', // → recurring_plans / donation_campaigns（定期献金・献金キャンペーン）
+  publicAnswers: 'proto_public_answers_v1', // → candidate_question_answers（公開質問ボードへの回答。国民側ボード・運営adminと連携）
 } as const
 
 /** 読み込み。データが無い/壊れている場合は fallback を返す。 */
